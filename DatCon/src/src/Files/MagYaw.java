@@ -7,7 +7,7 @@ public class MagYaw {
 
     private double magYaw = 0.0;
 
-    private static boolean debug = true;
+    private static boolean debug = false;
 
     static double halfInterval = 3.0;
 
@@ -33,17 +33,17 @@ public class MagYaw {
                         + ymag * Math.sin(pitch) * Math.sin(roll)
                         + zmag * Math.sin(pitch) * Math.cos(roll)));
         magYawDegrees = Math.toDegrees(magYaw);
-
-        double E_yaw_from_m_00 = Math
-                .atan2(-(magY * Math.cos(roll) - magZ * Math.sin(roll)),
-                        magX * Math.cos(pitch)
-                                + magY * Math.sin(pitch) * Math.sin(roll)
-                                + magZ * Math.sin(pitch) * Math.cos(roll));
-        double diff = Math.abs(magYaw - E_yaw_from_m_00);
-        if (Math.abs(diff) > 1.0e-15) {
-            System.out.println("Diff " + diff);
+        if (debug) {
+            double E_yaw_from_m_00 = Math.atan2(
+                    -(magY * Math.cos(roll) - magZ * Math.sin(roll)),
+                    magX * Math.cos(pitch)
+                            + magY * Math.sin(pitch) * Math.sin(roll)
+                            + magZ * Math.sin(pitch) * Math.cos(roll));
+            double diff = Math.abs(magYaw - E_yaw_from_m_00);
+            if (Math.abs(diff) > 1.0e-15) {
+                System.out.println("Diff " + diff);
+            }
         }
-
         magYawRI = null;
 
         if (!Double.isNaN(pitch) && !Double.isNaN(roll)) {
@@ -76,10 +76,12 @@ public class MagYaw {
             //            System.out.println("x1 " + x1 + " x10 " + x10 + " x11" + x11
             //                    + " x12 " + x12 + " x2 " + x2);
             magYawRI = intervalAtan2(x1, x2);
-            if (magYawRI != null) {
-                if (!(magYawRI.lo() <= magYaw && magYaw <= magYawRI.hi())) {
-                    System.out.println(
-                            "MagYaw not contained " + magYawRI + " " + magYaw);
+            if (debug) {
+                if (magYawRI != null) {
+                    if (!(magYawRI.lo() <= magYaw && magYaw <= magYawRI.hi())) {
+                        System.out.println("MagYaw not contained " + magYawRI
+                                + " " + magYaw);
+                    }
                 }
             }
         }
