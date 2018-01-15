@@ -96,7 +96,7 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
             "Click here to specify .DAT file");
 
     JTextField outputDirTextField = new JTextField(
-            "Click her to specify output directory");
+            "Click here to specify output directory");
 
     public File inputFile = null;
 
