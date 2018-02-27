@@ -76,7 +76,7 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
 
     public static JFrame frame = null;
 
-    public DatFile datFile = null;
+    public DatFile datFile =  null;
 
     JPanel contentPanel = null;
 
