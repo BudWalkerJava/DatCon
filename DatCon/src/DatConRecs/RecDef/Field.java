@@ -1,7 +1,5 @@
 package src.DatConRecs.RecDef;
 
-import src.DatConRecs.RecDef.Field.FieldType;
-
 public class Field {
     public enum FieldType {
         uint32_t, uint16_t, uint8_t, int32_t, int16_t, int8_t, fp32, duble, expr;

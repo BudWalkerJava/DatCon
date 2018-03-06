@@ -13,9 +13,9 @@ public class Dictionary {
         entries.add(new RecClassSpec(RecSmartBatt77_18.class, 18, 77));
         entries.add(new RecClassSpec(RecController43_0.class, 0, 43));
         entries.add(new RecClassSpec(RecTabletLoc179_43.class, 43, 179));
-        entries.add(new RecClassSpec(HomePoint34_13.class, 13, 34));
+        entries.add(new RecClassSpec(HomePoint34_13.class, 13, 34, 68));
         entries.add(new RecClassSpec(MotorCtrl35_54.class, 54, 35));
-        //        entries.add(new RecClassSpec());
+        entries.add(new RecClassSpec(Mag8_4.class, 4, 8));
         //        entries.add(new RecClassSpec());
     }
 }

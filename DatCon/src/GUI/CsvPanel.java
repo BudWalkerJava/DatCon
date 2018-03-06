@@ -31,6 +31,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -38,10 +39,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.LineBorder;
+
 import src.Files.ConvertDat;
 import src.Files.CsvWriter;
-import src.Files.FileBeingUsed;
 import src.Files.DatConLog;
+import src.Files.FileBeingUsed;
 import src.apps.DatCon;
 
 public class CsvPanel extends JPanel
@@ -126,6 +128,8 @@ public class CsvPanel extends JPanel
         gbc.gridwidth = 1;
 
         gbc.fill = GridBagConstraints.BOTH;
+
+        //        setBorder(BorderFactory.createLineBorder(Color.RED));
     }
 
     public void updateAfterGo() {
@@ -181,8 +185,6 @@ public class CsvPanel extends JPanel
             try {
                 csvWriter.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
             csvWriter = null;
         }
@@ -211,8 +213,6 @@ public class CsvPanel extends JPanel
             try {
                 csvWriter.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
     }
 

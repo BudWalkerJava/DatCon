@@ -51,32 +51,36 @@ public class RecBatt38_5000 extends RecBatt {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        if (numSamples == 0) { // first time
-            init();
-        }
-        valid = true;
-        numSamples++;
-        totalVolts = (float) (((float) (payloadBB.getInt(0))) / 1000.0);
-        //        crrnt = -(float) (((float) (_payload.getUnsignedShort(2) - 65536))
-        //                / 1000.0);
-        crrnt = -(float) (((float) (payloadBB.getInt(4))) / 1000.0);
-        fcc = (float) (((float) (payloadBB.getInt(8))));
-        remcap = (float) (((float) (payloadBB.getInt(12))));
-        temp = (float) (((float) (payloadBB.getShort(16))) / 10.0);
-        batteryPercent = payloadBB.get(18);
-        for (int i = 0; i < numCells; i++) {
-            volt[i] = (float) (((float) (payloadBB.getShort(19 + (2 * i))))
-                    / 1000.0);
-        }
-        status1 = payloadBB.get(14);
-        status2 = payloadBB.get(15);
-        status3 = payloadBB.get(16);
-        status4 = payloadBB.get(17);
+        try {
+            if (numSamples == 0) { // first time
+                init();
+            }
+            valid = true;
+            numSamples++;
+            totalVolts = (float) (((float) (payloadBB.getInt(0))) / 1000.0);
+            //        crrnt = -(float) (((float) (_payload.getUnsignedShort(2) - 65536))
+            //                / 1000.0);
+            crrnt = -(float) (((float) (payloadBB.getInt(4))) / 1000.0);
+            fcc = (float) (((float) (payloadBB.getInt(8))));
+            remcap = (float) (((float) (payloadBB.getInt(12))));
+            temp = (float) (((float) (payloadBB.getShort(16))) / 10.0);
+            batteryPercent = payloadBB.get(18);
+            for (int i = 0; i < numCells; i++) {
+                volt[i] = (float) (((float) (payloadBB.getShort(19 + (2 * i))))
+                        / 1000.0);
+            }
+            status1 = payloadBB.get(14);
+            status2 = payloadBB.get(15);
+            status3 = payloadBB.get(16);
+            status4 = payloadBB.get(17);
 
-        float voltMax = maxVolt(volt);
-        float voltMin = minVolt(volt);
-        voltDiff = voltMax - voltMin;
-        processComputedBatt();
+            float voltMax = maxVolt(volt);
+            float voltMin = minVolt(volt);
+            voltDiff = voltMax - voltMin;
+            processComputedBatt();
+        } catch (Exception e) {
+            RecordException(e);
+        }
     }
     //Spark
     //    name        bat_dynamic_data

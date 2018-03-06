@@ -68,14 +68,14 @@ public class ConvertDatV3 extends ConvertDat {
             }
             long lastTickNoPrinted = -sampleSize;
 
-            while (_datFile.getNextDatRec(true, true, true, true)) {
-                // while (_datFile.getNextDatRec(true, true, true, false)) {
+            //while (_datFile.getNextDatRec(true, true, true, true)) {
+            while (_datFile.getNextDatRec(true, true, true, false)) {
                 int payloadType = _datFile._type;
                 long payloadStart = _datFile._start;
                 int payloadLength = _datFile._payloadLength;
                 tickNo = _datFile._tickNo;
                 if (tickNo > tickRangeUpper) {
-                    throw _fileEnd;
+                    throw new FileEnd();
                 }
                 for (int i = 0; i < records.size(); i++) {
                     if (records.get(i).isId(payloadType)) {
@@ -83,13 +83,19 @@ public class ConvertDatV3 extends ConvertDat {
                                 payloadLength, payloadType, tickNo);
                         try {
                             ((Record) records.get(i)).process(payload);
+                            processedPayload = true;
                         } catch (Exception e) {
-                            DatConLog.Exception(e, "Can't process record "
-                                    + ((Record) records.get(i)));
-                            throw new RuntimeException("Can't process record "
-                                    + ((Record) records.get(i)));
+                            String errMsg = "Can't process record "
+                                    + ((Record) records.get(i)) + " tickNo="
+                                    + tickNo + " filePos=" + _datFile.getPos();
+                            if (Persist.EXPERIMENTAL_DEV) {
+                                System.out.println(errMsg);
+                                e.printStackTrace();
+                            } else {
+                                DatConLog.Exception(e, errMsg);
+                            }
+                            throw new RuntimeException(errMsg);
                         }
-                        processedPayload = true;
                     }
                 }
                 if (tickRangeLower <= tickNo) {
@@ -117,6 +123,8 @@ public class ConvertDatV3 extends ConvertDat {
                     + _datFile.getErrorRatio(Corrupted.Type.CRC));
             DatConLog.Log("Other Error Ratio "
                     + _datFile.getErrorRatio(Corrupted.Type.Other));
+            DatConLog.Log(
+                    "TotalNumRecExceptions = " + Record.totalNumRecExceptions);
         }
         return _datFile.getResults();
     }

@@ -18,20 +18,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package src.DatConRecs.Created4V3;
 
-import java.util.ArrayList;
-
 import src.DatConRecs.Payload;
 import src.DatConRecs.Record;
-import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
+import src.Files.ConvertDat.lineType;
 import src.Files.DatConLog;
-import src.Files.MagYaw;
 import src.Files.Persist;
 import src.Files.Signal;
-import src.Files.RecSpec;
 import src.Files.Units;
-import src.Files.Util;
-import src.Files.ConvertDat.lineType;
 
 public class MagRawGroup extends Record {
 
@@ -55,10 +49,14 @@ public class MagRawGroup extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        magX = payloadBB.getShort(0);
-        magY = payloadBB.getShort(2);
-        magZ = payloadBB.getShort(4);
-        valid = true;
+        try {
+            magX = payloadBB.getShort(0);
+            magY = payloadBB.getShort(2);
+            magZ = payloadBB.getShort(4);
+            valid = true;
+        } catch (Exception e) {
+            RecordException(e);
+        }
     }
 
     @Override

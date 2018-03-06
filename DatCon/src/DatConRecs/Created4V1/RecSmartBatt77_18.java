@@ -59,26 +59,30 @@ public class RecSmartBatt77_18 extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        valid = true;
-        batteryUsefulTime = payloadBB.getShort(0);
-        if (!validBUT) {
-            if (batteryUsefulTime > 0)
-                validBUT = true;
-        }
+        try {
+            valid = true;
+            batteryUsefulTime = payloadBB.getShort(0);
+            if (!validBUT) {
+                if (batteryUsefulTime > 0)
+                    validBUT = true;
+            }
 
-        goHomeBatt = payloadBB.get(6);
-        if (!validGHB) {
-            if (goHomeBatt > 0) {
-                validGHB = true;
+            goHomeBatt = payloadBB.get(6);
+            if (!validGHB) {
+                if (goHomeBatt > 0) {
+                    validGHB = true;
+                }
             }
-        }
-        batteryGoHomeStatus = payloadBB.get(14);
-        batteryStatus = payloadBB.getShort(20);
-        voltagePercent = payloadBB.get(72);
-        if (!validVP) {
-            if (voltagePercent > 0) {
-                validVP = true;
+            batteryGoHomeStatus = payloadBB.get(14);
+            batteryStatus = payloadBB.getShort(20);
+            voltagePercent = payloadBB.get(72);
+            if (!validVP) {
+                if (voltagePercent > 0) {
+                    validVP = true;
+                }
             }
+        } catch (Exception e) {
+            RecordException(e);
         }
     }
 
@@ -110,14 +114,15 @@ public class RecSmartBatt77_18 extends Record {
         return retv;
     }
 
-    private static Signal batteryStatusSig = Signal.State("batteryStatus",
+    private static Signal batteryStatusSig = Signal.State("SMART_BATT:Status",
             "Battery Status", "");
 
-    private static Signal batteryGHStatusSig = Signal.State("batteryGHStatus",
-            "Battery Go Home Status", "");
+    private static Signal batteryGHStatusSig = Signal
+            .State("SMART_BATT:GHStatus", "Battery Go Home Status", "");
 
     public static Signal voltagePercentSig = Signal.SeriesInt(
-            "Battery:voltage%", "Voltage Percentage", null, Units.percentage);
+            "SMART_BATT:voltage%", "Voltage Percentage", null,
+            Units.percentage);
 
     @Override
     public void printCols(lineType lineT) {

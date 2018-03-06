@@ -1,9 +1,9 @@
 package src.DatConRecs.FromOtherV3Dats;
 
-import src.DatConRecs.*;
+import src.DatConRecs.Payload;
+import src.DatConRecs.Record;
 import src.Files.ConvertDat;
 import src.Files.ConvertDat.lineType;
-import src.Files.DatHeader.AcType;
 import src.Files.DatConLog;
 import src.Files.Signal;
 import src.Files.Units;

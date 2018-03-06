@@ -1,21 +1,4 @@
-/* Record68_17 class
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that redistribution of source code include
-the following disclaimer in the documentation and/or other materials provided
-with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY ITS CREATOR "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE CREATOR OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package src.DatConRecs.Created4V3;
 
 import src.DatConRecs.Payload;
@@ -34,24 +17,28 @@ public class RecBatt38_5001 extends RecBatt {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        if (numSamples == 0) { // first time
-            init();
-        }
-        valid = true;
-        numSamples++;
-        totalVolts = (float) (((float) (payloadBB.getShort(0))) / 1000.0);
-        crrnt = -(float) (((float) (_payload.getUnsignedShort(4) - 65536))
-                / 1000.0);
-        temp = (float) (((float) (payloadBB.getShort(16))) / 10.0);
-        batteryPercent = payloadBB.get(18);
-        for (int i = 0; i < numCells; i++) {
-            volt[i] = (float) (((float) (payloadBB.getShort(19 + (2 * i))))
+        try {
+            if (numSamples == 0) { // first time
+                init();
+            }
+            valid = true;
+            numSamples++;
+            totalVolts = (float) (((float) (payloadBB.getShort(0))) / 1000.0);
+            crrnt = -(float) (((float) (_payload.getUnsignedShort(4) - 65536))
                     / 1000.0);
+            temp = (float) (((float) (payloadBB.getShort(16))) / 10.0);
+            batteryPercent = payloadBB.get(18);
+            for (int i = 0; i < numCells; i++) {
+                volt[i] = (float) (((float) (payloadBB.getShort(19 + (2 * i))))
+                        / 1000.0);
+            }
+            float voltMax = maxVolts(volt);
+            float voltMin = minVolts(volt);
+            voltDiff = voltMax - voltMin;
+            processComputedBatt();
+        } catch (Exception e) {
+            RecordException(e);
         }
-        float voltMax = maxVolts(volt);
-        float voltMin = minVolts(volt);
-        voltDiff = voltMax - voltMin;
-        processComputedBatt();
     }
 
     @Override

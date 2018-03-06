@@ -16,9 +16,10 @@ public class Dictionary {
         entries.add(new RecClassSpec(ns_data_debug_10085.class, 10085, 80));
         entries.add(new RecClassSpec(ns_data_component_10086.class, 10086, 4));
         entries.add(new RecClassSpec(serial_api_inputs_1002.class, 1002, 23));
-        entries.add(new RecClassSpec(battery_info_1710.class, 1710, 44));
         entries.add(new RecClassSpec(Controller_39_1000.class, 1000, 39));
-       
+        entries.add(new RecClassSpec(pwm_output_76_20001.class, 20001, 76));
+
+        entries.add(new RecClassSpec(usonic4_16.class, 16, 4));
         //entries.add(new RecClassSpec(.class, ));
     }
 }

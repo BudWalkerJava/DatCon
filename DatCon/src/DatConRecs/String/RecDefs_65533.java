@@ -19,14 +19,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package src.DatConRecs.String;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import src.DatConRecs.Payload;
 import src.DatConRecs.Record;
 import src.Files.ConvertDat;
-import src.Files.DatConLog;
 import src.Files.ConvertDat.lineType;
+import src.Files.DatConLog;
 
 public class RecDefs_65533 extends Record {
 
@@ -41,12 +38,16 @@ public class RecDefs_65533 extends Record {
     @Override
     public void process(Payload _payload) {
         super.process(_payload);
-        payloadString = _payload.getString();
-        if (convertDat.recDefsPS != null) {
-            if (payloadString.length() > 0) {
-                convertDat.recDefsPS.println(payloadString.replace('\t', ' ')
-                        .replaceAll("\n", "\r\n"));
+        try {
+            payloadString = _payload.getString();
+            if (convertDat.recDefsPS != null) {
+                if (payloadString.length() > 0) {
+                    convertDat.recDefsPS.println(payloadString
+                            .replace('\t', ' ').replaceAll("\n", "\r\n"));
+                }
             }
+        } catch (Exception e) {
+            RecordException(e);
         }
     }
 

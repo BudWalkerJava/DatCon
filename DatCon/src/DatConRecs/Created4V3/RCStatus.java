@@ -85,22 +85,13 @@ public class RCStatus extends Record {
         super.process(_payload);
     }
 
-    protected Signal frameLostSig = Signal.State("RC:frameLost", "Frame Lost",
-            "");
+    //    protected Signal frameLostSig = Signal.State("RC:frameLost", "Frame Lost",
+    //            "");
 
     protected Signal sigStrengthSig = Signal.SeriesFloat("RC:sigStrength",
             "Sig Strength from Frames Lost", null, Units.percentage);
 
-    protected Signal failSafeSig = Signal.State("RC:failSafe", "Fail Safe",
-            "Hover");
-
-    protected Signal dataLostSig = Signal.StateExperimental("RC:dataLost",
-            "Data Lost", "");
-
-    protected Signal appLostSig = Signal.State("RC:appLost", "App Lost", "");
-
-    protected Signal connectedSig = Signal.State("RC:connected", "Connected",
-            "Connected");
+    protected Signal RCStateSig = Signal.State("RC", "RC State", "");
 
     private int numGoodSig = 0;
 
@@ -128,9 +119,10 @@ public class RCStatus extends Record {
     public void printCols(lineType lineT) {
         try {
 
-            printCsvValue(fSafe, failSafeSig, "", lineT, statusValid);
-            printCsvValue(data_lost, dataLostSig, "", lineT, statusValid);
-            printCsvValue(app_lost, appLostSig, "", lineT, statusValid);
+            printCsvValue(fSafe, RCStateSig, "failSafe", lineT, statusValid);
+            printCsvValue(data_lost, RCStateSig, "dataLost", lineT,
+                    statusValid);
+            printCsvValue(app_lost, RCStateSig, "appLost", lineT, statusValid);
             printCsvValue(sStrength, sigStrengthSig, "", lineT, statusValid);
             //printCsvValue(rec_cnt, rcDebugSig, "rec_cnt", lineT, statusValid);
             //            printCsvValue(connected, connectedSig, "", lineT,

@@ -38,27 +38,31 @@ public class RecBattStat19_1711 extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        status = "";
-        if (payloadBB.get(0) != 0x00) {
-            status += "NotReady|";
-        }
-        if (payloadBB.get(1) != 0x00) {
-            status += "CommError|";
-        }
-        if (payloadBB.get(5) != 0x00) {
-            status += "VolVeryLow|";
-        }
-        if (payloadBB.get(6) != 0x00) {
-            status += "VolNotSafe|";
-        }
-        if (payloadBB.get(13) != 0x00) {
-            status += "Dangerous|";
-        }
-        if (payloadBB.get(14) != 0x00) {
-            status += "CanCalcSmartCapacity|";
-        }
-        if (status.equalsIgnoreCase("")) {
-            status = "OK";
+        try {
+            status = "";
+            if (payloadBB.get(0) != 0x00) {
+                status += "NotReady|";
+            }
+            if (payloadBB.get(1) != 0x00) {
+                status += "CommError|";
+            }
+            if (payloadBB.get(5) != 0x00) {
+                status += "VolVeryLow|";
+            }
+            if (payloadBB.get(6) != 0x00) {
+                status += "VolNotSafe|";
+            }
+            if (payloadBB.get(13) != 0x00) {
+                status += "Dangerous|";
+            }
+            if (payloadBB.get(14) != 0x00) {
+                status += "CanCalcSmartCapacity|";
+            }
+            if (status.equalsIgnoreCase("")) {
+                status = "OK";
+            }
+        } catch (Exception e) {
+            RecordException(e);
         }
     }
 

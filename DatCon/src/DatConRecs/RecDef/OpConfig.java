@@ -12,7 +12,6 @@ import java.util.Vector;
 import src.DatConRecs.RecDef.Field.FieldType;
 import src.Files.DatConLog;
 import src.Files.Persist;
-import src.Files.RecClassSpec;
 import src.Files.RecSpec;
 
 public class OpConfig {
@@ -27,11 +26,10 @@ public class OpConfig {
 
     private Vector<RecordDef> records = new Vector<RecordDef>();
 
+    @SuppressWarnings("serial")
     public static class ParseError extends Exception {
 
         private State _state = null;
-
-        //        private String _token = "Unknown";
 
         private Line _line;
 
@@ -142,7 +140,7 @@ public class OpConfig {
                 case ConfigSeen:
                     if (firstToken.equalsIgnoreCase("name") && numTokens > 1) {
                         state = State.NameSeen;
-                        recName = tokens.get(1);
+                        recName = conCatTokens(tokens, 1);
                     } else {
                         throw new ParseError(line, lineNum, state);
                     }
@@ -174,7 +172,7 @@ public class OpConfig {
                         break;
                     }
                     if (numTokens > 1) {
-                        varName = normalizeVarName(tokens.get(1));
+                        varName = normalizeVarName(getVarName(tokens, 1));
                     } else {
                         throw new ParseError(line, lineNum, state);
                     }
@@ -186,8 +184,10 @@ public class OpConfig {
                         state = State.TypeSeen;
                         break;
                     }
-                    if (numTokens > 2 && isNumber(tokens.get(2))) {
-                        defaultValue = Integer.parseInt(tokens.get(2));
+                    if (numTokens > 2
+                            && isNumber(tokens.get(tokens.size() - 1))) {
+                        defaultValue = Integer
+                                .parseInt(tokens.get(tokens.size() - 1));
                     }
                     field = new Field(fieldType, varName, defaultValue);
                     record.addField(field);
@@ -247,8 +247,32 @@ public class OpConfig {
             } else {
                 DatConLog.Exception(pe, "ParseError " + pe);
             }
-            DatConLog.Exception(pe, "ParseError " + pe);
         }
+    }
+
+    private String getVarName(Vector<String> tokens, int i) {
+        String retv = "";
+        int length = tokens.size();
+        if (i < length) {
+            retv = tokens.get(i);
+            for (int j = i + 1; j < length; j++) {
+                if (!isNumber(tokens.get(j)))
+                    retv += "_" + tokens.get(j);
+            }
+        }
+        return retv;
+    }
+
+    private String conCatTokens(Vector<String> tokens, int i) {
+        String retv = "";
+        int length = tokens.size();
+        if (i < length) {
+            retv = tokens.get(i);
+            for (int j = i + 1; j < length; j++) {
+                retv += "_" + tokens.get(j);
+            }
+        }
+        return retv;
     }
 
     private String normalizeVarName(String name) {
@@ -278,47 +302,48 @@ public class OpConfig {
         return newName;
     }
 
-    public void printRecords() {
-        for (int i = 0; i < records.size(); i++) {
-            RecordDef record = records.get(i);
-            System.out.println(record);
-        }
-    }
-
-    static void createJavaFiles(String dirName, String opFileName)
+    public static void createJavaFiles(String dirName, String opFileName)
             throws IOException {
-        BufferedReader in = new BufferedReader(new FileReader(opFileName));
-        String opLine = "";
-        Vector<Line> lines = new Vector<Line>();
-        while ((opLine = in.readLine()) != null) {
-            Line line = new Line(opLine);
-            lines.add(line);
-        }
-        File dictFile = new File(System.getProperty("user.dir")
-                + "/src/DatConRecs/" + dirName + "/" + "Dictionary.java");
-        PrintStream dictPrintStream = new PrintStream(dictFile);
-        dictPrintStream.println("package src.DatConRecs." + dirName + ";");
-        dictPrintStream.println("import java.util.Vector;");
-        dictPrintStream.println("import src.Files.RecClassSpec;");
-        dictPrintStream.println("public class Dictionary {");
-        dictPrintStream.println(
-                " public static Vector<RecClassSpec> entries = new Vector<RecClassSpec>();");
-        dictPrintStream.println("static {");
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new FileReader(opFileName));
+            String opLine = "";
+            Vector<Line> lines = new Vector<Line>();
+            while ((opLine = in.readLine()) != null) {
+                Line line = new Line(opLine);
+                lines.add(line);
+            }
+            File dictFile = new File(System.getProperty("user.dir")
+                    + "/src/DatConRecs/" + dirName + "/" + "Dictionary.java");
+            PrintStream dictPrintStream = new PrintStream(dictFile);
+            dictPrintStream.println("package src.DatConRecs." + dirName + ";");
+            dictPrintStream.println("import java.util.Vector;");
+            dictPrintStream.println("import src.Files.RecClassSpec;");
+            dictPrintStream.println("public class Dictionary {");
+            dictPrintStream.println(
+                    " public static Vector<RecClassSpec> entries = new Vector<RecClassSpec>();");
+            dictPrintStream.println("static {");
 
-        OpConfig opConfig = new OpConfig(lines);
-        Vector<RecordDef> records = opConfig.getRecords();
-        //opConfig.printRecords();
-        for (int i = 0; i < records.size(); i++) {
-            RecordDef record = records.get(i);
-            createJavaFile(dirName, record);
-            dictPrintStream.println("entries.add(new RecClassSpec("
-                    + record.getNameWithLengthAndId() + ".class,"
-                    + record.getId() + ", " + record.getLength() + "));");
+            OpConfig opConfig = new OpConfig(lines);
+            Vector<RecordDef> records = opConfig.getRecords();
+            //opConfig.printRecords();
+            for (int i = 0; i < records.size(); i++) {
+                RecordDef record = records.get(i);
+                createJavaFile(dirName, record);
+                dictPrintStream.println("entries.add(new RecClassSpec("
+                        + record.getNameWithLengthAndId() + ".class,"
+                        + record.getId() + ", " + record.getLength() + "));");
+            }
+            dictPrintStream.println("}");
+            dictPrintStream.println("}");
+            dictPrintStream.println("");
+            dictPrintStream.close();
+
+        } finally {
+            if (in != null) {
+                in.close();
+            }
         }
-        dictPrintStream.println("}");
-        dictPrintStream.println("}");
-        dictPrintStream.println("");
-        dictPrintStream.close();
     }
 
     private static void createJavaFile(String dirName, RecordDef record)
@@ -445,6 +470,7 @@ public class OpConfig {
 
     private static boolean isNumber(String token) {
         try {
+            @SuppressWarnings("unused")
             Integer number = Integer.parseInt(token);
         } catch (NumberFormatException nfe) {
             return false;

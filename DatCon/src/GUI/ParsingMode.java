@@ -26,7 +26,7 @@ public class ParsingMode extends JMenu implements ActionListener {
             "Engineered then DatDefined");
 
     JRadioButtonMenuItem invalidStructOK = new JRadioButtonMenuItem(
-            "Invalid Structure OK");
+            "Invalid DatHeader OK");
 
     public ParsingMode(String label) {
         setText(label);

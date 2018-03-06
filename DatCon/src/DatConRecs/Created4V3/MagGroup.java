@@ -47,10 +47,14 @@ public class MagGroup extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        magX = payloadBB.getShort(0);
-        magY = payloadBB.getShort(2);
-        magZ = payloadBB.getShort(4);
-        valid = true;
+        try {
+            magX = payloadBB.getShort(0);
+            magY = payloadBB.getShort(2);
+            magZ = payloadBB.getShort(4);
+            valid = true;
+        } catch (Exception e) {
+            RecordException(e);
+        }
     }
 
     @Override

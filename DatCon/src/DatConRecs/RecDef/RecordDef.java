@@ -116,7 +116,8 @@ public class RecordDef extends Record {
                 offset += field.getSize();
             }
         } catch (Exception e) {
-            DatConLog.Exception(e);
+            RecordException(e);
+            //DatConLog.Exception(e);
         }
     }
 

@@ -51,6 +51,8 @@ public abstract class Record extends RecSpec {
 
     protected int numRecExceptions = 0;
 
+    public static int totalNumRecExceptions = 0;
+
     static DecimalFormat df = new DecimalFormat("000.#############",
             new DecimalFormatSymbols(Locale.US));
 
@@ -155,14 +157,18 @@ public abstract class Record extends RecSpec {
 
     protected void RecordException(Exception e) {
         if (numRecExceptions == 0) {
+            String errMsg = "RecException filePos()=" + _datFile.getPos()
+                    + " tickNo " + _datFile._tickNo + " type ="
+                    + _datFile._type;
             if (Persist.EXPERIMENTAL_DEV) {
-                System.out.println("RecException ");
+                System.out.println(errMsg);
                 e.printStackTrace();
             } else {
-                DatConLog.Exception(e);
+                DatConLog.Exception(e, errMsg);
             }
         }
         numRecExceptions++;
+        totalNumRecExceptions++;
     }
 
     // Following won't create entries in XML file

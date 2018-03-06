@@ -19,6 +19,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package src.Files;
 
+import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,14 +57,15 @@ public class Persist {
 
     public static boolean invalidStructOK = false;
 
+    static public ParsingMode parsingMode = ParsingMode.JUST_ENGINEERED;
+
+    public static Dimension datConSize = new Dimension(900, 950);
+
     static public enum ParsingMode {
         JUST_DAT, JUST_ENGINEERED, DAT_THEN_ENGINEERED, ENGINEERED_THEN_DAT
     };
 
-    static public ParsingMode parsingMode = ParsingMode.JUST_ENGINEERED;
-
     public Persist() {
-        FileReader input = null;
         String userHome = System.getProperty("user.home");
         if (userHome != null && userHome.length() > 0) {
             persistenceFile = new File(userHome + "/.datCon");
@@ -147,6 +149,11 @@ public class Persist {
                 output.println("invalidStructOK:true");
             } else {
                 output.println("invalidStructOK:false");
+            }
+            if (datConSize != null) {
+                output.println(String.format("datConSize:%d,%d",
+                        (long) datConSize.getWidth(),
+                        (long) datConSize.getHeight()));
             }
 
             output.close();
@@ -284,6 +291,16 @@ public class Persist {
                             invalidStructOK = true;
                         } else {
                             invalidStructOK = false;
+                        }
+                    }
+                    if (line.indexOf("datConSize:") == 0) {
+                        index = line.indexOf(":") + 1;
+                        String size = line.substring(index);
+                        String[] tokens = size.split(",");
+                        if (tokens.length == 2) {
+                            datConSize = new Dimension(
+                                    Integer.parseInt(tokens[0]),
+                                    Integer.parseInt(tokens[1]));
                         }
                     }
                 }

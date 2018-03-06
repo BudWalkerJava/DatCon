@@ -1,14 +1,8 @@
 package src.DatConRecs.String;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 import java.util.Vector;
 
-import src.Files.ConvertDat;
-import src.Files.DatConLog;
-import src.Files.Persist;
 import src.Files.RecClassSpec;
-import src.Files.RecSpec;
 
 public class Dictionary {
 

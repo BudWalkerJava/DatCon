@@ -1,11 +1,7 @@
 package src.DatConRecs.Created4V3;
 
-import src.DatConRecs.*;
+import src.DatConRecs.Payload;
 import src.Files.ConvertDat;
-import src.Files.ConvertDat.lineType;
-import src.Files.DatConLog;
-import src.Files.Signal;
-import src.Files.Units;
 
 public class Controller_36_1000 extends RecController {
 

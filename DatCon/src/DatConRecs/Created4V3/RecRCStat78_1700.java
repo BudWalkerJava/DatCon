@@ -30,13 +30,17 @@ public class RecRCStat78_1700 extends RCStatus {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        statusValid = true;
-        fail_safe = payloadBB.get(45);
-        data_lost = ((payloadBB.get(47) == 1) ? "lost" : "");
-        app_lost = ((payloadBB.get(48) == 1) ? "lost" : "");
-        frame_lost = payloadBB.get(49);
-        rec_cnt = ((long) payloadBB.getInt(50) & 0xffffffffL);
-        super.common();
+        try {
+            statusValid = true;
+            fail_safe = payloadBB.get(45);
+            data_lost = ((payloadBB.get(47) == 1) ? "lost" : "");
+            app_lost = ((payloadBB.get(48) == 1) ? "lost" : "");
+            frame_lost = payloadBB.get(49);
+            rec_cnt = ((long) payloadBB.getInt(50) & 0xffffffffL);
+            super.common();
+        } catch (Exception e) {
+            RecordException(e);
+        }
     }
 
     @Override

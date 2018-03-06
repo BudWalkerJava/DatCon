@@ -23,22 +23,23 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.instrument.Instrumentation;
-import java.net.URL;
-import java.util.Enumeration;
 
-import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -49,6 +50,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingWorker;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -70,13 +72,15 @@ import src.GUI.LogFilesPanel;
 import src.GUI.LoggingPanel;
 import src.GUI.TimeAxisPanel;
 
-public class DatCon extends JPanel implements ActionListener, MouseListener {
+@SuppressWarnings("serial")
+public class DatCon extends JPanel
+        implements ActionListener, ComponentListener, MouseListener {
 
-    static public final String version = "3.2.0";
+    static public final String version = "3.3.0";
 
     public static JFrame frame = null;
 
-    public DatFile datFile =   null;
+    public DatFile datFile = null;
 
     JPanel contentPanel = null;
 
@@ -112,6 +116,8 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
 
     public static int frameWidth = 950;
 
+    //public static Dimension datConSize = new Dimension(800, 300);
+
     String datFileName = "";
 
     Go doit = null;
@@ -128,17 +134,7 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
 
     private LogFilesPanel logFilesPanel = null;
 
-    private class OutPanel extends JPanel {
-        private OutPanel() {
-            this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-            this.setOpaque(true);
-            JLabel outDirLabel = new JLabel("Output Dir  ");
-            this.add(outDirLabel);
-            add(outputDirTextField);
-            add(dirViewIt);
-
-        }
-    }
+    private Timer resizeTimer = null;
 
     public DatCon() {
         DatCon.instance = this;
@@ -148,110 +144,128 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
 
     public Container createContentPane() {
         new WorkingDir(this);
+        resizeTimer = new Timer(250, this);
+        resizeTimer.setRepeats(false);
         contentPanel = new JPanel();
+        contentPanel.addComponentListener(this);
         contentPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         contentPanel.setOpaque(true);
         contentPaneBGColor = contentPanel.getBackground();
-        log = new LoggingPanel(this);
+        log = new LoggingPanel();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         gbc.ipadx = 10;
         gbc.ipady = 10;
         gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.5;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
         JLabel datFileLabel = new JLabel(".DAT file");
         contentPanel.add(datFileLabel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 5;
-        datFileTextField.addMouseListener(this);
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
         contentPanel.add(datFileTextField, gbc);
-        gbc.gridwidth = 1;
+        //        datFileTextField
+        //                .setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+        datFileTextField.addMouseListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 6;
-        gbc.anchor = GridBagConstraints.WEST;
-        OutPanel op = new OutPanel();
-        outputDirTextField.addMouseListener(this);
-        dirViewIt.addActionListener(this);
-        contentPanel.add(op, gbc);
         gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        JLabel outDirLabel = new JLabel("Output Dir  ");
+        contentPanel.add(outDirLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 4;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        contentPanel.add(outputDirTextField, gbc);
+        outputDirTextField.addMouseListener(this);
+
+        gbc.gridx = 5;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        contentPanel.add(dirViewIt, gbc);
+        dirViewIt.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridheight = 2;
         gbc.gridwidth = 3;
-        // gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
         timeAxisPanel = new TimeAxisPanel(this);
         contentPanel.add(timeAxisPanel, gbc);
-        // gbc.weightx = 0.5;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-
-        // gbc.gridx = 0;
-        // gbc.gridy = 4;
-        // gbc.gridheight = 1;
-        // gbc.gridwidth = 3;
-        // dashwarePanel = new DashwarePanel(this);
-        // contentPanel.add(dashwarePanel, gbc);
-        // gbc.gridheight = 1;
-        // gbc.gridwidth = 1;
-
-        //        gbc.gridx = 0;
-        //        gbc.gridy = 4;
-        //        gbc.gridheight = 1;
-        //        gbc.gridwidth = 3;
-        //        HPElevationPanel = new HPElevation(this);
-        //        contentPanel.add(HPElevationPanel, gbc);
-        //        gbc.gridheight = 1;
-        //        gbc.gridwidth = 1;
 
         gbc.gridx = 3;
         gbc.gridy = 2;
         gbc.gridheight = 1;
         gbc.gridwidth = 3;
-        // gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
         csvPanel = new CsvPanel(this);
         contentPanel.add(csvPanel, gbc);
-        // gbc.weightx = 0.5;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
 
         gbc.gridx = 3;
         gbc.gridy = 3;
         gbc.gridheight = 1;
         gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
         logFilesPanel = new LogFilesPanel(this);
         contentPanel.add(logFilesPanel, gbc);
-        gbc.gridwidth = 1;
 
         gbc.gridx = 3;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
         kmlPanel = new KMLPanel(this);
         contentPanel.add(kmlPanel, gbc);
-        gbc.gridwidth = 1;
 
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         gbc.gridy = 5;
-        gbc.gridwidth = 5;
+        gbc.gridwidth = 6;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
         contentPanel.add(goButton, gbc);
         goButton.setEnabled(false);
         goButton.addActionListener(this);
-        gbc.gridwidth = 1;
 
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         gbc.gridy = 6;
-        // gbc.weighty = 1.0;
-        gbc.gridwidth = 5;
+        gbc.gridwidth = 6;
+        gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
         contentPanel.add(log, gbc);
-        gbc.gridwidth = 1;
+
+        createEmptyBox(1, 8, gbc);
+        createEmptyBox(2, 8, gbc);
+        createEmptyBox(3, 8, gbc);
+        createEmptyBox(4, 8, gbc);
 
         outputDirName = Persist.outputDirName;
         File outDirFile = new File(outputDirName);
@@ -266,7 +280,39 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
             fc.setCurrentDirectory(inputDir);
         }
         checkState();
+        //contentPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         return contentPanel;
+    }
+
+    private void createEmptyBox(int x, int y, GridBagConstraints gbc) {
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.insets.set(0, 0, 0, 0);
+        contentPanel.add(Box.createRigidArea(new Dimension(50, 0)), gbc);
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        Persist.datConSize = frame.getSize();
+        if (resizeTimer.isRunning()) {
+            resizeTimer.restart();
+        } else {
+            resizeTimer.start();
+        }
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
     }
 
     private void getNewDatFile() {
@@ -314,7 +360,7 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
         kmlPanel.createFileNames(flyFileNameRoot);
     }
 
-    private class PreAnalyze extends SwingWorker {
+    private class PreAnalyze extends SwingWorker<Object, Object> {
         File iFile = null;
 
         private DatCon datCon;
@@ -393,13 +439,13 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
         Go(ConvertDat convertDat) {
             this.convertDat = convertDat;
         }
-
-        public void setAnalyzeDat(ConvertDat convertDat) {
-            this.convertDat = convertDat;
-        }
-
-        public Go() {
-        }
+        //
+        //        public void setAnalyzeDat(ConvertDat convertDat) {
+        //            this.convertDat = convertDat;
+        //        }
+        //
+        //        public Go() {
+        //        }
 
         @Override
         protected AnalyzeDatResults doInBackground() throws Exception {
@@ -496,7 +542,7 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
         String fName = inputFile.getAbsolutePath();
         Persist.inputFileName = fName;
         datFileTextField.setText(fName);
-        //setDatFile(inFile);
+        setOutputDir(inputFile.getParentFile());
     }
 
     public void checkState() {
@@ -562,11 +608,13 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            JComponent source = (JComponent) (e.getSource());
+            Object source = (e.getSource());
             if (source == goButton) {
                 go();
             } else if (source == dirViewIt) {
                 Desktop.getDesktop().open(new File(outputDirName));
+            } else if (source == resizeTimer) {
+                Persist.save();
             }
         } catch (Exception exception) {
             DatConLog.Exception(exception);
@@ -645,7 +693,7 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
             frame.setContentPane(datCon.createContentPane());
 
             // Display the window.
-            frame.setSize(frameWidth, frameHeight);
+            frame.setSize(Persist.datConSize);
             frame.setVisible(true);
             ImageIcon img = new ImageIcon("drone.jpg");
             frame.setIconImage(img.getImage());
@@ -686,31 +734,4 @@ public class DatCon extends JPanel implements ActionListener, MouseListener {
     public DatFile getDatFile() {
         return datFile;
     }
-
-    public void setDimension(int width, int height) {
-        frameHeight = height;
-        frameWidth = width;
-    }
-    //
-    //    public class DatConFrame extends JFrame {
-    //        private DatCon _datCon = null;
-    //
-    //        public DatConFrame(String string, DatCon datCon) {
-    //            super(string);
-    //            this._datCon = datCon;
-    //        }
-    //
-    //        @Override
-    //        public void setSize(int width, int height) {
-    //            super.setSize(width, height);
-    //            _datCon.setDimension(width, height);
-    //        }
-    //
-    //        @Override
-    //        public void setSize(Dimension d) {
-    //            super.setSize(d);
-    //        }
-    //
-    //    }
-
 }

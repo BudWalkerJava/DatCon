@@ -20,17 +20,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package src.V1.Files;
 
 import java.io.IOException;
-import java.util.Vector;
 
 import src.DatConRecs.Dictionary;
 import src.DatConRecs.Payload;
 import src.DatConRecs.Record;
-import src.DatConRecs.RecDef.RecordDef;
 import src.Files.AnalyzeDatResults;
 import src.Files.ConvertDat;
 import src.Files.Corrupted;
 import src.Files.DatConLog;
-import src.Files.DatHeader;
 import src.Files.FileEnd;
 import src.Files.Persist;
 import src.Files.RecSpec;
@@ -63,7 +60,7 @@ public class ConvertDatV1 extends ConvertDat {
             // that group
             while (true) {
                 if (_datFile.getPos() > fileLength - 8) {
-                    throw (_fileEnd);
+                    throw new FileEnd();
                 }
                 // Get the next tick#Group
                 DatFileV1.tickGroup tG = ((DatFileV1) _datFile).getTickGroup();

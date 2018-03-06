@@ -47,7 +47,11 @@ public class RecOA27_100 extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        OAfrontDistance = payloadBB.get(4);
+        try {
+            OAfrontDistance = payloadBB.get(4);
+        } catch (Exception e) {
+            RecordException(e);
+        }
     }
 
     @Override

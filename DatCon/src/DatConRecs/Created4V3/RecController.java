@@ -18,17 +18,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package src.DatConRecs.Created4V3;
 
-import java.util.ArrayList;
-
 import src.DatConRecs.Payload;
 import src.DatConRecs.Record;
 import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
+import src.Files.ConvertDat.lineType;
 import src.Files.DatConLog;
-import src.Files.RecSpec;
 import src.Files.Signal;
 import src.Files.Units;
-import src.Files.ConvertDat.lineType;
 
 public class RecController extends Record {
 

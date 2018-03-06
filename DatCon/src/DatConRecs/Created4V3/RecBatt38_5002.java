@@ -28,31 +28,35 @@ public class RecBatt38_5002 extends RecBatt {
 
     public RecBatt38_5002(ConvertDat convertDat) {
         super(convertDat, 5002, 38);
-       
+
     }
 
     public short batteryPercent = 0;
 
     public void process(Payload _payload) {
         super.process(_payload);
-        if (numSamples == 0) { // first time
-            init();
-        }
-        valid = true;
-        numSamples++;
-        totalVolts = (float) (((float) (payloadBB.getShort(0))) / 1000.0);
-        crrnt = -(float) (((float) (_payload.getUnsignedShort(4) - 65536))
-                / 1000.0);
-        temp = (float) (((float) (payloadBB.getShort(16))) / 10.0);
-        batteryPercent = payloadBB.get(18);
-        for (int i = 0; i < numCells; i++) {
-            volt[i] = (float) (((float) (payloadBB.getShort(19 + (2 * i))))
+        try {
+            if (numSamples == 0) { // first time
+                init();
+            }
+            valid = true;
+            numSamples++;
+            totalVolts = (float) (((float) (payloadBB.getShort(0))) / 1000.0);
+            crrnt = -(float) (((float) (_payload.getUnsignedShort(4) - 65536))
                     / 1000.0);
+            temp = (float) (((float) (payloadBB.getShort(16))) / 10.0);
+            batteryPercent = payloadBB.get(18);
+            for (int i = 0; i < numCells; i++) {
+                volt[i] = (float) (((float) (payloadBB.getShort(19 + (2 * i))))
+                        / 1000.0);
+            }
+            float voltMax = maxVolts(volt);
+            float voltMin = minVolts(volt);
+            voltDiff = voltMax - voltMin;
+            processComputedBatt();
+        } catch (Exception e) {
+            RecordException(e);
         }
-        float voltMax = maxVolts(volt);
-        float voltMin = minVolts(volt);
-        voltDiff = voltMax - voltMin;
-        processComputedBatt();
     }
 
     @Override

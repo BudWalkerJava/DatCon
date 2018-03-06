@@ -42,17 +42,21 @@ public class RecAirComp29_10100 extends RecAirComp {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        valid = true;
-        vbx = payloadBB.getFloat(0);
-        vby = payloadBB.getFloat(4);
-        compAlti = payloadBB.getFloat(8);
-        windSpeed = payloadBB.getFloat(12);
-        windX = payloadBB.getFloat(16);
-        windY = payloadBB.getFloat(20);
-        motorSpeed = payloadBB.getFloat(24);
-        velLevel = (short) (0xff & payloadBB.get(26));
-        if (Persist.EXPERIMENTAL_FIELDS) {
-            super.windComps();
+        try {
+            valid = true;
+            vbx = payloadBB.getFloat(0);
+            vby = payloadBB.getFloat(4);
+            compAlti = payloadBB.getFloat(8);
+            windSpeed = payloadBB.getFloat(12);
+            windX = payloadBB.getFloat(16);
+            windY = payloadBB.getFloat(20);
+            motorSpeed = payloadBB.getFloat(24);
+            velLevel = (short) (0xff & payloadBB.get(26));
+            if (Persist.EXPERIMENTAL_FIELDS) {
+                super.windComps();
+            }
+        } catch (Exception e) {
+            RecordException(e);
         }
     }
 

@@ -160,23 +160,26 @@ public class Motor extends Record {
 
     public Motor(ConvertDat convertDat, int id, int length) {
         super(convertDat, id, length);
-     
-        voltsPerMotor = new double[maxNumMotors][numSamples];
-        currentPerMotor = new double[maxNumMotors][numSamples];
-        wattSecsPerDTPerMotor = new double[maxNumMotors][numSamples];
-        wattsPerMotor = new double[maxNumMotors];
-        wattsAvgPerMotor = new double[maxNumMotors];
-        wattsPerMotorLast = new double[maxNumMotors];
-        wattSecsPerMotor = new double[maxNumMotors];
-        wattSecsPerMotorLast = new double[maxNumMotors];
-        wattSecsPerTotalDistPerMotor = new double[maxNumMotors];
-        for (int i = 0; i < maxNumMotors; i++) {
-            wattSecsPerMotor[i] = 0.0;
-            wattSecsPerMotorLast[i] = 0.0;
-            wattSecsPerTotalDistPerMotor[i] = 0.0;
+        try {
+            voltsPerMotor = new double[maxNumMotors][numSamples];
+            currentPerMotor = new double[maxNumMotors][numSamples];
+            wattSecsPerDTPerMotor = new double[maxNumMotors][numSamples];
+            wattsPerMotor = new double[maxNumMotors];
+            wattsAvgPerMotor = new double[maxNumMotors];
+            wattsPerMotorLast = new double[maxNumMotors];
+            wattSecsPerMotor = new double[maxNumMotors];
+            wattSecsPerMotorLast = new double[maxNumMotors];
+            wattSecsPerTotalDistPerMotor = new double[maxNumMotors];
+            for (int i = 0; i < maxNumMotors; i++) {
+                wattSecsPerMotor[i] = 0.0;
+                wattSecsPerMotorLast[i] = 0.0;
+                wattSecsPerTotalDistPerMotor[i] = 0.0;
+            }
+            currentNumSamples = 0;
+            sampleNum = 0;
+        } catch (Exception e) {
+            RecordException(e);
         }
-        currentNumSamples = 0;
-        sampleNum = 0;
     }
 
     public void printCols(lineType lineT) {
@@ -444,35 +447,36 @@ public class Motor extends Record {
     }
 
     public static Signal motorVoltsAvgSig = Signal.SeriesFloat(
-            "Motor:Volts:Avg", "motor Volts", AxesAndSigs.motorVoltsAxis,
-            Units.volts);
+            "MotorPwrCalcs:Volts:Avg", "motor Volts",
+            AxesAndSigs.motorVoltsAxis, Units.volts);
 
     public static Signal motorCurrentAvgSig = Signal.SeriesFloat(
-            "Motor:Current:Avg", "Motor Load", AxesAndSigs.motorCurrentAxis,
-            Units.amps);
+            "MotorPwrCalcs:Current:Avg", "Motor Load",
+            AxesAndSigs.motorCurrentAxis, Units.amps);
 
     public static Signal motorWattsAvgSig = Signal.SeriesFloat(
-            "Motor:Watts:Avg", "Motor Load", AxesAndSigs.motorWattsAxis,
+            "MotorPwrCalcs:Watts:Avg", "Motor Load", AxesAndSigs.motorWattsAxis,
             Units.watts);
 
     public static Signal motorWattsSecsSig = Signal.SeriesFloat(
-            "Motor:WattSecs", "Motor Watt Secs", AxesAndSigs.motorWattsSecsAxis,
-            Units.wattsSecs);
+            "MotorPwrCalcs:WattSecs", "Motor Watt Secs",
+            AxesAndSigs.motorWattsSecsAxis, Units.wattsSecs);
 
     public static Signal motorWattsSecsPerDistSig = Signal.SeriesFloat(
-            "Motor:WattSecs/Dist", "Motor Watt Secs/Distance",
+            "MotorPwrCalcs:WattSecs/Dist", "Motor Watt Secs/Distance",
             AxesAndSigs.motorWattsSecsPerDistAxis, Units.wattsSecsPerDist);
 
     public static Signal motorWattSecsPerTotalDistSig = Signal.SeriesFloat(
-            "Motor:WattSecs/TotalDist", "Motor Watt Secs/Total Distance",
+            "MotorPwrCalcs:WattSecs/TotalDist",
+            "Motor Watt Secs/Total Distance",
             AxesAndSigs.motorWattsSecsPerDistAxis, Units.wattsSecsPerDist);
 
     public static Signal motorWattsPerVelHSig = Signal.SeriesFloat(
-            "Motor:Watts/VelH", "Motor Watts Per Vel",
+            "MotorPwrCalcs:Watts/VelH", "Motor Watts Per Vel",
             AxesAndSigs.motorWattsPerVelAxis, Units.wattsPerVel);
 
     public static Signal motorWattsPerVelDSig = Signal.SeriesFloat(
-            "Motor:Watts/VelD", "Motor Watts Per Vel",
+            "MotorPwrCalcs:Watts/VelD", "Motor Watts Per Vel",
             AxesAndSigs.motorWattsPerVelAxis, Units.wattsPerVel);
 
     protected void printPower(lineType lineT, boolean valid) {

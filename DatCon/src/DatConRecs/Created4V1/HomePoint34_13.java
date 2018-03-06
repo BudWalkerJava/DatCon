@@ -43,22 +43,25 @@ public class HomePoint34_13 extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        double longRad = payloadBB.getDouble(0);
-        double latRad = payloadBB.getDouble(8);
-        height = payloadBB.getFloat(16);
-        //short homeState = payloadBB.getShort(20);
-        rthHeight = payloadBB.getShort(22);
-        longitudeHP = Math.toDegrees(longRad);
-        latitudeHP = Math.toDegrees(latRad);
-        if (!valid) {
-            if (longRad < 100.0 && latRad < 100.0) {
-                valid = true;
+        try {
+            double longRad = payloadBB.getDouble(0);
+            double latRad = payloadBB.getDouble(8);
+            height = payloadBB.getFloat(16);
+            //short homeState = payloadBB.getShort(20);
+            rthHeight = payloadBB.getShort(22);
+            longitudeHP = Math.toDegrees(longRad);
+            latitudeHP = Math.toDegrees(latRad);
+            if (!valid) {
+                if (longRad < 100.0 && latRad < 100.0) {
+                    valid = true;
+                }
             }
+            if (valid) {
+                convertDat.processHomePoint(latitudeHP, longitudeHP, height);
+            }
+        } catch (Exception e) {
+            RecordException(e);
         }
-        if (valid) {
-            convertDat.processHomePoint(latitudeHP, longitudeHP, height);
-        }
-
     }
     //    name    osd_home
     //    type    13
@@ -68,7 +71,7 @@ public class HomePoint34_13 extends Record {
     //    uint16_t osd_home_state
     //    uint16_t fixed_altitedue
     //    int16_t  course_lock_torsion
-   
+
     @Override
     public void printCols(lineType lineT) {
         try {

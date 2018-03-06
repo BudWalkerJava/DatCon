@@ -43,11 +43,15 @@ public class RecSmartBatt10_1712 extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        goHomeBatt = _payload.getUnsignedShort(2);
-        landBatt = _payload.getUnsignedShort(4);
-        goHomeTime = _payload.getUnsignedShort(6);
-        landTime = _payload.getUnsignedShort(8);
-        valid = true;
+        try {
+            goHomeBatt = _payload.getUnsignedShort(2);
+            landBatt = _payload.getUnsignedShort(4);
+            goHomeTime = _payload.getUnsignedShort(6);
+            landTime = _payload.getUnsignedShort(8);
+            valid = true;
+        } catch (Exception e) {
+            RecordException(e);
+        }
     }
 
     //    name        smart_battery_info

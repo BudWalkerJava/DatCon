@@ -23,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -38,8 +37,6 @@ import src.Files.DatHeader;
 import src.Files.FileEnd;
 import src.Files.NotDatFile;
 import src.Files.Persist;
-import src.Files.RecSpec;
-import src.GUI.LogFilesPanel;
 
 public class DatFileV1 extends DatFile {
 
@@ -125,12 +122,11 @@ public class DatFileV1 extends DatFile {
                     throw (new Corrupted(thisGroupsTickNo, startOfRecord));
                 }
                 length = (0xFF & getByte(startOfRecord + 1));
-                @SuppressWarnings("unused")
-                byte always0 = (byte) getByte(startOfRecord + 2);
+                //byte always0 = (byte) getByte(startOfRecord + 2);
                 nextStartOfRecord = startOfRecord + length; // the next 0x55 , we hope
                 if (nextStartOfRecord > fileLength)
-                    throw (_fileEnd);
-                short hdrChksum = (short) (0xFF & getByte(startOfRecord + 3));
+                    throw (new FileEnd());
+                //short hdrChksum = (short) (0xFF & getByte(startOfRecord + 3));
                 int type = getUnsignedShort(startOfRecord + 4);
                 thisRecordTickNo = getUnsignedInt(startOfRecord + 6);
                 int calcChksum = calc_checksum(memory, startOfRecord,
@@ -152,20 +148,19 @@ public class DatFileV1 extends DatFile {
                     throw (new Corrupted(thisGroupsTickNo, startOfRecord + 1));
                 }
 
-                if (getByte(nextStartOfRecord) != 0x55) { // if not positioned
-                                                              // at next 0x55,
-                                                          // then its
-                                                          // corrupted
+                // if not positioned at next 0x55, then it's corrupted
+                if (getByte(nextStartOfRecord) != 0x55) {
                     throw (new Corrupted(thisGroupsTickNo, nextStartOfRecord));
                 }
 
-                if (thisGroupsTickNo == -1) { // thisTickGroup doesn't yet have
-                    // a tickNo
+                // thisTickGroup doesn't yet have a tickNo
+                if (thisGroupsTickNo == -1) {
                     thisGroupsTickNo = thisRecordTickNo;
                     thisTickGroup.tickNo = thisRecordTickNo;
+                    _tickNo = thisRecordTickNo;
                 }
-                if (thisRecordTickNo > thisTickGroup.tickNo) { // start next
-                                                                   // group
+
+                if (thisRecordTickNo > thisTickGroup.tickNo) { // start next group
                     nextTickGroup.reset();
                     nextTickGroup.add(thisRecordTickNo,
                             startOfRecord + headerLength,
@@ -181,27 +176,19 @@ public class DatFileV1 extends DatFile {
                 startOfRecord = nextStartOfRecord;
             } catch (Corrupted c) {
                 if (getPos() > fileLength - (int) clockRate) {
-                    throw (_fileEnd);
+                    throw (new FileEnd());
                 }
-                //c.printStackTrace();
                 numCorrupted++;
-                // results.addMessage(c.toString() + "\n");
-                // results.setResultCode(AnalyzeDatResults.ResultCode.SOME_ERRORS);
                 if ((numRecs > 1000)
                         && ((float) numCorrupted / (float) numRecs) > 0.02) {
                     throw (new Corrupted(thisGroupsTickNo, startOfRecord));
                 }
-                //                if (numCorrupted > 100) {
-                //                    results.setResultCode(
-                //                            AnalyzeDatResults.ResultCode.CORRUPTED);
-                //                    throw (new Corrupted(thisGroupsTickNo, startOfRecord));
-                //                }
                 try {
                     setPosition(c.filePos);
                     byte fiftyfive = readByte();
                     while (fiftyfive != 0X55) {
                         if (getPos() > fileLength - 1000) {
-                            throw (_fileEnd);
+                            throw (new FileEnd());
                         }
                         fiftyfive = readByte();
                     }
@@ -211,7 +198,7 @@ public class DatFileV1 extends DatFile {
                 // set position right before the next 0x55
                 startOfRecord = getPos() - 1;
             } catch (FileEnd f) {
-                throw (_fileEnd);
+                throw (new FileEnd());
             } catch (Exception e) {
                 e.printStackTrace();
                 results.setResultCode(AnalyzeDatResults.ResultCode.CORRUPTED);
@@ -301,7 +288,7 @@ public class DatFileV1 extends DatFile {
             byte fiftyfive = readByte();
             while (fiftyfive != 0X55) {
                 if (getPos() > fileLength - 1000) {
-                    throw (_fileEnd);
+                    throw (new FileEnd());
                 }
                 fiftyfive = readByte();
             }
@@ -315,7 +302,7 @@ public class DatFileV1 extends DatFile {
                     }
                     nextStartOfRecord = filePos + length;
                     if (nextStartOfRecord > fileLength) {
-                        throw (_fileEnd);
+                        throw (new FileEnd());
                     }
                     if (getByte(nextStartOfRecord) != 0x55) {
                         throw (new Corrupted());
@@ -333,7 +320,7 @@ public class DatFileV1 extends DatFile {
                     fiftyfive = readByte();
                     while (fiftyfive != 0X55) {
                         if (getPos() > fileLength - 1000) {
-                            throw (_fileEnd);
+                            throw (new FileEnd());
                         }
                         fiftyfive = readByte();
                     }
@@ -356,7 +343,7 @@ public class DatFileV1 extends DatFile {
             byte fiftyfive = readByte();
             while (fiftyfive != 0X55) {
                 if (getPos() > fileLength - 1000) {
-                    throw (_fileEnd);
+                    throw (new FileEnd());
                 }
                 fiftyfive = readByte();
             }
@@ -370,7 +357,7 @@ public class DatFileV1 extends DatFile {
                     }
                     nextStartOfRecord = filePos + length;
                     if (nextStartOfRecord > fileLength) {
-                        throw (_fileEnd);
+                        throw (new FileEnd());
                     }
                     if (getByte(nextStartOfRecord) != 0x55) {
                         throw (new Corrupted());
@@ -383,7 +370,7 @@ public class DatFileV1 extends DatFile {
                     fiftyfive = readByte();
                     while (fiftyfive != 0X55) {
                         if (getPos() > fileLength - 1000) {
-                            throw (_fileEnd);
+                            throw (new FileEnd());
                         }
                         fiftyfive = readByte();
                     }
@@ -401,7 +388,7 @@ public class DatFileV1 extends DatFile {
             long tickNo = 0;
             while (true) {
                 if (getPos() > fileLength - 8) {
-                    throw (_fileEnd);
+                    throw (new FileEnd());
                 }
                 DatFileV1.tickGroup tG = getTickGroup();
                 tickNo = tG.tickNo;
@@ -470,7 +457,8 @@ public class DatFileV1 extends DatFile {
         } catch (Corrupted ex) {
         } catch (IOException e) {
         } finally {
-            printTypes(Persist.EXPERIMENTAL_DEV);
+            if (Persist.EXPERIMENTAL_DEV)
+                printTypes();
         }
     }
 }

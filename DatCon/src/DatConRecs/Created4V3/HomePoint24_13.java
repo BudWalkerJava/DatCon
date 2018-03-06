@@ -18,14 +18,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package src.DatConRecs.Created4V3;
 
-import java.util.ArrayList;
-
 import src.DatConRecs.Payload;
 import src.DatConRecs.Record;
 import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
-import src.Files.DatConLog;
 import src.Files.ConvertDat.lineType;
+import src.Files.DatConLog;
 
 public class HomePoint24_13 extends Record {
 
@@ -45,20 +43,24 @@ public class HomePoint24_13 extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        double longRad = payloadBB.getDouble(0);
-        double latRad = payloadBB.getDouble(8);
-        height = payloadBB.getFloat(16);
-        //short homeState = payloadBB.getShort(20);
-        rthHeight = payloadBB.getShort(22);
-        longitudeHP = Math.toDegrees(longRad);
-        latitudeHP = Math.toDegrees(latRad);
-        if (!valid) {
-            if (longRad < 100.0 && latRad < 100.0) {
-                valid = true;
+        try {
+            double longRad = payloadBB.getDouble(0);
+            double latRad = payloadBB.getDouble(8);
+            height = payloadBB.getFloat(16);
+            //short homeState = payloadBB.getShort(20);
+            rthHeight = payloadBB.getShort(22);
+            longitudeHP = Math.toDegrees(longRad);
+            latitudeHP = Math.toDegrees(latRad);
+            if (!valid) {
+                if (longRad < 100.0 && latRad < 100.0) {
+                    valid = true;
+                }
             }
-        }
-        if (valid) {
-            convertDat.processHomePoint(latitudeHP, longitudeHP, height);
+            if (valid) {
+                convertDat.processHomePoint(latitudeHP, longitudeHP, height);
+            }
+        } catch (Exception e) {
+            RecordException(e);
         }
 
     }

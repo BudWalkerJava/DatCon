@@ -13,7 +13,8 @@ public class Dictionary extends src.DatConRecs.Dictionary {
         entries.add(new RecClassSpec(GPS_2097.class, 2097, 66, 68, 72));
         entries.add(new RecClassSpec(GPS_2098.class, 2098, 66, 68, 72));
 
-        entries.add(new RecClassSpec(HomePoint24_13.class, 13, 24, 45, 68, 69));
+        entries.add(new RecClassSpec(HomePoint24_13.class, 13, 24, 45, 68, 69,
+                73, 74));
 
         entries.add(new RecClassSpec(RecSmartBatt10_1712.class, 1712, 10));
 
@@ -26,15 +27,9 @@ public class Dictionary extends src.DatConRecs.Dictionary {
         entries.add(new RecClassSpec(RecBatt38_5001.class, 5001, 38));
         entries.add(new RecClassSpec(RecBatt38_5002.class, 5002, 38));
 
-        entries.add(new RecClassSpec(RecBattStat19_1711.class, 1711, 19, 20));
+        entries.add(new RecClassSpec(BattInfo_38_1710.class, 1710, 38));
 
-        //        entries.add(new RecClassSpec(RecController36_1000.class, 1000, 36));
-        //        entries.add(new RecClassSpec(RecController37_1000.class, 1000, 37));
-        //        entries.add(new RecClassSpec(RecController39_1000.class, 1000, 39));
-        //        entries.add(new RecClassSpec(RecController41_1000.class, 1000, 41));
-        //        entries.add(new RecClassSpec(RecController47_1000.class, 1000, 47));
-        //        entries.add(new RecClassSpec(RecController52_1000.class, 1000, 52));
-        //        entries.add(new RecClassSpec(RecController53_1000.class, 1000, 53));
+        entries.add(new RecClassSpec(RecBattStat19_1711.class, 1711, 19, 20));
 
         entries.add(new RecClassSpec(Controller_36_1000.class, 1000, 36));
         entries.add(new RecClassSpec(Controller_37_1000.class, 1000, 37));

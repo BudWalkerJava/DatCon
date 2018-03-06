@@ -15,7 +15,6 @@ public class MotorCtrl35_54 extends MotorControl {
         super.process(_payload);
         try {
             valid = true;
-
             pwm1 = ((float) _payload.getUnsignedShort(19)) / 100.0f;
             pwm2 = ((float) _payload.getUnsignedShort(21)) / 100.0f;
             pwm3 = ((float) _payload.getUnsignedShort(23)) / 100.0f;

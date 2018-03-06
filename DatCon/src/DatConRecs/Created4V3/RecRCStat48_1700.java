@@ -33,21 +33,27 @@ public class RecRCStat48_1700 extends RCStatus {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        statusValid = true;
-        fail_safe = payloadBB.get(2);
-        data_lost = ((payloadBB.get(4) == 1) ? "lost" : "");
-        app_lost = ((payloadBB.get(5) == 1) ? "lost" : "");
-        frame_lost = payloadBB.get(6);
-        rec_cnt = ((long) payloadBB.getInt(7) & 0xffffffffL);
-        connected = ((payloadBB.get(44) == 1) ? "Connected" : "Disconnected");
-        super.common();
+        try {
+            statusValid = true;
+            fail_safe = payloadBB.get(2);
+            data_lost = ((payloadBB.get(4) == 1) ? "lost" : "");
+            app_lost = ((payloadBB.get(5) == 1) ? "lost" : "");
+            frame_lost = payloadBB.get(6);
+            rec_cnt = ((long) payloadBB.getInt(7) & 0xffffffffL);
+            connected = ((payloadBB.get(44) == 1) ? "Connected"
+                    : "Disconnected");
+            super.common();
+        } catch (Exception e) {
+            RecordException(e);
+        }
     }
 
     @Override
     public void printCols(lineType lineT) {
         super.printCols(lineT);
         try {
-            printCsvValue(connected, connectedSig, "", lineT, statusValid);
+            printCsvValue(connected, RCStateSig, "connected", lineT,
+                    statusValid);
         } catch (Exception e) {
             DatConLog.Exception(e);
         }

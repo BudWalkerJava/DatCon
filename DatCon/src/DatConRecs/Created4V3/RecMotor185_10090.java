@@ -20,11 +20,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package src.DatConRecs.Created4V3;
 
 import src.DatConRecs.Payload;
-import src.DatConRecs.Record;
-import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
-import src.Files.ConvertDat.lineType;
-import src.Files.DatHeader.AcType;
 import src.Files.DatConLog;
 
 public class RecMotor185_10090 extends Motor {
@@ -132,7 +128,7 @@ public class RecMotor185_10090 extends Motor {
                 rsTemp = payloadBB.getShort(122);
                 rsPPM_recv = payloadBB.getShort(124);
                 rsV_out = ((float) payloadBB.getShort(126)) / 10.0f;
-                rsPPM_send = _payload.getUnsignedShort(132);
+                rsPPM_send = _payload.getUnsignedShort(134);
             }
 
         } catch (Exception e) {

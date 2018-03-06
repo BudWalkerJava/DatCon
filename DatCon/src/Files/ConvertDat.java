@@ -37,7 +37,7 @@ public class ConvertDat {
 
     public DatFile _datFile = null;
 
-    protected FileEnd _fileEnd = new FileEnd();
+    //protected FileEnd _fileEnd = new FileEnd();
 
     public long tickNo = 0;
 
@@ -227,7 +227,7 @@ public class ConvertDat {
     }
 
     public void createRecordParsers() {
-        GoTxt_12.current = null;
+        GoTxt50_12.current = null;
         Vector<Record> rcrds = new Vector<Record>();
         try {
             int numRecParsers = 0;

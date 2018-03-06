@@ -1,32 +1,7 @@
-/* LoggingPanel  class
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that redistribution of source code include
-the following disclaimer in the documentation and/or other materials provided
-with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY ITS CREATOR "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE CREATOR OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package src.GUI;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -36,20 +11,20 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import src.Files.ConvertDat;
 import src.Files.DatConLog;
 import src.apps.DatCon;
 
+@SuppressWarnings("serial")
 public class LoggingPanel extends JScrollPane {
 
     private static JTextPane logArea = null;
 
-    private DatCon datCon = null;
+    //    private DatCon datCon = null;
 
     public static LoggingPanel instance;
 
-    public LoggingPanel(DatCon datCon) {
-        this.datCon = datCon;
+    public LoggingPanel() {
+        //        this.datCon = datCon;
         instance = this;
         setPreferredSize(new Dimension(400, 100));
         logArea = new JTextPane();

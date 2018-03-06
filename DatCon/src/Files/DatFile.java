@@ -29,15 +29,14 @@ import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 
+import src.DatConRecs.Record;
 import src.Files.Corrupted.Type;
 import src.Files.DatHeader.AcType;
 import src.V1.Files.DatFileV1;
 import src.V3.Files.DatFileV3;
-import java.util.Vector;
 import src.apps.DatCon;
 
 public class DatFile {
@@ -68,7 +67,7 @@ public class DatFile {
 
     public static String firmwareDate = "";
 
-    protected FileEnd _fileEnd = new FileEnd();
+    //protected FileEnd _fileEnd = new FileEnd();
 
     protected int numCorrupted = 0;
 
@@ -111,6 +110,10 @@ public class DatFile {
 
     private HashMap<Integer, RecSpec> recsInDat = new HashMap<Integer, RecSpec>();
 
+    public long _tickNo = 0;
+
+    public int _type = 0;
+
     public HashMap<Integer, RecSpec> getRecsInDat() {
         return recsInDat;
     }
@@ -134,11 +137,14 @@ public class DatFile {
             throws NotDatFile, IOException {
         byte arra[] = new byte[256];
         //if (true )return (new DatFileV3(datFileName));
+        DatConLog.Log(" ");
+        DatConLog.Log("createDatFile " + datFileName);
         FileInputStream bfr = new FileInputStream(new File(datFileName));
         bfr.read(arra, 0, 256);
         bfr.close();
         if (!(new String(arra, 16, 5).equals("BUILD"))) {
             if (Persist.invalidStructOK) {
+                DatConLog.Log("createDatFile invalid header - proceeding");
                 datFile = new DatFileV3(datFileName);
                 datFile.setStartOfRecords(256);
                 return datFile;
@@ -164,9 +170,9 @@ public class DatFile {
             if ((new String(arra, 16, 5).equals("BUILD"))) {
                 return true;
             }
-            if (Persist.EXPERIMENTAL_DEV) {
-                return true;
-            }
+            //            if (Persist.EXPERIMENTAL_DEV) {
+            //                return true;
+            //            }
         } catch (Exception e) {
         }
         return false;
@@ -275,6 +281,7 @@ public class DatFile {
         }
         startOfRecord = startOfRecords;
         setPosition(startOfRecord);
+        Record.totalNumRecExceptions = 0;
     }
 
     public void skipOver(int num) throws IOException {
@@ -313,29 +320,6 @@ public class DatFile {
         return memory.get((int) fp);
     }
 
-    @SuppressWarnings("unused")
-    private String getString(long fp) {
-        int length = 256;
-        byte bytes[] = new byte[length];
-        int l = 0;
-        int B = 0x00;
-        for (int i = 0; i < length; i++) {
-            try {
-                B = getByte((int) fp + i);
-            } catch (FileEnd e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            if (B == 0x00 || B == '\r' || B == '\n') {
-                l = i;
-                break;
-            }
-            bytes[i] = (byte) B;
-        }
-        String retv = new String(bytes, 0, l);
-        return retv;
-    }
-
     public byte readByte() throws IOException {
         byte rv = getByte();
         skipOver(1);
@@ -362,7 +346,6 @@ public class DatFile {
                 + 256 * (int) (0xff & memory.get((int) (filePos + 1)));
     }
 
-    @SuppressWarnings("unused")
     protected int getUnsignedShort(long fp) throws FileEnd {
         if (fp > fileLength - 2)
             throw (new FileEnd());
@@ -469,16 +452,11 @@ public class DatFile {
         return retv;
     }
 
-    public void printTypes(boolean experimental) {
+    public void printTypes() {
         Iterator<RecSpec> iter = recsInDat.values().iterator();
         while (iter.hasNext()) {
             RecSpec tst = iter.next();
-            if (experimental) {
-                System.out
-                        .println(tst.getDescription() + " Type " + tst.getId());
-            } else {
-                DatConLog.Log(tst.getDescription() + " Type " + tst.getId());
-            }
+            DatConLog.Log(tst.getDescription() + " Type " + tst.getId());
         }
     }
 
@@ -543,20 +521,6 @@ public class DatFile {
         return chksum;
     }
 
-    //    public static void main(String[] args) {
-    //
-    //        byte packet[] = new byte[4];
-    //        packet[0] = (byte) 0x55;
-    //        packet[1] = (byte) 0x4E;
-    //        packet[2] = 0;
-    //        DatFile df = new DatFile();
-    //        for (int i = 12; i < 256; i++) {
-    //            packet[1] = (byte) ((byte) 0xFF & (byte) i);
-    //            short chksum = df.calc_pkt55_hdr_checksum((byte) 0x77, packet, 3);
-    //            System.out.println("Length " + (i - 12) + " Chksum " + chksum);
-    //        }
-    //    }
-
     static int[] crc = new int[] { 0x0000, 0x1189, 0x2312, 0x329b, 0x4624,
             0x57ad, 0x6536, 0x74bf, 0x8c48, 0x9dc1, 0xaf5a, 0xbed3, 0xca6c,
             0xdbe5, 0xe97e, 0xf8f7, 0x1081, 0x0108, 0x3393, 0x221a, 0x56a5,
@@ -594,22 +558,23 @@ public class DatFile {
     public int calc_pkt55_checksum(short[] packet, byte[] bPacket,
             short plength) {
         int v = 0x3692; //  # P3
-        int vx = 0x3692; //  # P3
+        //        int vx = 0x3692; //  # P3
         for (int i = 0; i < plength; i++) {
             int vv = v >> 8;
-            int vvx = vx >> 8;
+            //            int vvx = vx >> 8;
             //            System.out.println("vv " + vv + " v " + v
             //                    + " ((packet[i] ^ v) & 0xFF) " + ((packet[i] ^ v) & 0xFF));
             //            System.out.println("vvx " + vvx + " vx " + vx
             //                    + " ((packet[i] ^ v) & 0xFF) " + ((packet[i] ^ v) & 0xFF));
             v = vv ^ crc[((packet[i] ^ v) & 0xFF)];
-            vx = vvx ^ crc[((bPacket[i] ^ vx) & 0xFF)];
-            int xx = 1;
+            //            vx = vvx ^ crc[((bPacket[i] ^ vx) & 0xFF)];
         }
 
-        if (v != vx) {
-            System.out.println(" V " + v);
-        }
+        //        if (v != vx) {
+        //            if (Persist.EXPERIMENTAL_DEV) {
+        //                System.out.println(" V " + v);
+        //            }
+        //        }
         return v;
     }
 

@@ -39,9 +39,6 @@ public class RecController43_0 extends Record {
 
     public short rudder = 0;
 
-    //    public byte modeSwitch = 0;
-    //
-    //    public short gpsHealth = 0;
     public boolean sticksValid = false;
 
     public RecController43_0(ConvertDat convertDat) {
@@ -50,13 +47,15 @@ public class RecController43_0 extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        aileron = payloadBB.getShort(4);
-        elevator = payloadBB.getShort(6);
-        throttle = payloadBB.getShort(8);
-        rudder = payloadBB.getShort(10);
-        //        modeSwitch = (byte) (payloadBB.get(31) & 0x03);
-        //        gpsHealth = payloadBB.get(41);
-        sticksValid = true;
+        try {
+            aileron = payloadBB.getShort(4);
+            elevator = payloadBB.getShort(6);
+            throttle = payloadBB.getShort(8);
+            rudder = payloadBB.getShort(10);
+            sticksValid = true;
+        } catch (Exception e) {
+            RecordException(e);
+        }
     }
 
     @Override

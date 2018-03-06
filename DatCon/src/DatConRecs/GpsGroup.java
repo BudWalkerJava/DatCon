@@ -79,27 +79,31 @@ public class GpsGroup extends Record {
 
     public void process(Payload _payload) {
         super.process(_payload);
-        valid = true;
-        date = _payload.getUnsignedInt(0);
-        time = _payload.getUnsignedInt(4);
-        LongP = ((double) _payload.getInt(8)) / 1.0E7;
-        LatP = ((double) _payload.getInt(12)) / 1.0E7;
-        heightMSL = ((float) _payload.getInt(16)) / 1000.0f;
-        hdop = _payload.getFloat(32);
-        pdop = _payload.getFloat(36);
-        hacc = _payload.getFloat(40);
-        sacc = _payload.getFloat(44);
-        numGPS = _payload.getUnsignedInt(56);
-        numGLN = _payload.getUnsignedInt(60);
-        numSV = _payload.getUnsignedShort(64);
-        if (!dtValid && sacc < 8000.0f) {
-            dtValid = true;
+        try {
+            valid = true;
+            date = _payload.getUnsignedInt(0);
+            time = _payload.getUnsignedInt(4);
+            LongP = ((double) _payload.getInt(8)) / 1.0E7;
+            LatP = ((double) _payload.getInt(12)) / 1.0E7;
+            heightMSL = ((float) _payload.getInt(16)) / 1000.0f;
+            hdop = _payload.getFloat(32);
+            pdop = _payload.getFloat(36);
+            hacc = _payload.getFloat(40);
+            sacc = _payload.getFloat(44);
+            numGPS = _payload.getUnsignedInt(56);
+            numGLN = _payload.getUnsignedInt(60);
+            numSV = _payload.getUnsignedShort(64);
+            if (!dtValid && sacc < 8000.0f) {
+                dtValid = true;
+            }
+            processDateTime();
+            if (hdop < 1000.0 && pdop < 1000.0)
+                dopValid = true;
+            else
+                dopValid = false;
+        } catch (Exception e) {
+            RecordException(e);
         }
-        processDateTime();
-        if (hdop < 1000.0 && pdop < 1000.0)
-            dopValid = true;
-        else
-            dopValid = false;
     }
 
     public void printCols(lineType lineT) {

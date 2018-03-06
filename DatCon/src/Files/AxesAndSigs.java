@@ -168,11 +168,11 @@ public class AxesAndSigs {
     public final static Signal totalGyroSig = Signal.SeriesDouble("totalGyro",
             "Integrate and sum gyro values", null, Units.degrees);
 
-    public final static Signal magYawSig = Signal.SeriesDouble("magYaw",
+    public final static Signal magYawSig = Signal.SeriesDouble("magYaw:magYaw",
             "Yaw computed from magnetometers", null, Units.degrees180);
 
-    public final static Signal magYawDiffSig = Signal.SeriesDouble("Yaw-magYaw",
-            "Yaw magYaw diff", null, Units.degrees180);
+    public final static Signal magYawDiffSig = Signal.SeriesDouble(
+            "magYaw:Yaw-magYaw", "Yaw magYaw diff", null, Units.degrees180);
 
     public final static Signal magYawSigInterval = Signal.SeriesDouble(
             "magYawErrorBound", "Error Bound", null, Units.degrees180);

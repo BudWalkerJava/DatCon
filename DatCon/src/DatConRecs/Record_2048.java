@@ -272,24 +272,25 @@ public class Record_2048 extends Record {
             double yaw = Math.toDegrees(yawRadians);
             double longitudeDegrees = Math.toDegrees(longRad);
             double latitudeDegrees = Math.toDegrees(latRad);
-            if (GoTxt_12.current == null) {
+            if (GoTxt50_12.current == null) {
                 convertDat.processCoordsNoGoTxt(longitudeDegrees,
                         latitudeDegrees, baroSmooth);
             }
 
-            if (GoTxt_12.current != null) {
-                printCsvValue(GoTxt_12.current.flightTime,
-                        GoTxt_12.flightTimeSig, "", lineT,
-                        GoTxt_12.current.valid);
+            if (GoTxt50_12.current != null) {
+                printCsvValue(GoTxt50_12.current.flightTime,
+                        GoTxt50_12.flightTimeSig, "", lineT,
+                        GoTxt50_12.current.valid);
             }
             printCsvValue(longitudeDegrees, AxesAndSigs.longitudeSig, "", lineT,
                     convertDat.gpsCoordsOK);
             printCsvValue(latitudeDegrees, AxesAndSigs.latitudeSig, "", lineT,
                     convertDat.gpsCoordsOK);
             printCsvValue(numSats, AxesAndSigs.numSatsSig, "", lineT, valid);
-            if (GoTxt_12.current != null) {
-                printCsvValue(GoTxt_12.current.gpsLevel, GoTxt_12.gpsHealthSig,
-                        "", lineT, GoTxt_12.current.valid);
+            if (GoTxt50_12.current != null) {
+                printCsvValue(GoTxt50_12.current.gpsLevel,
+                        GoTxt50_12.gpsHealthSig, "", lineT,
+                        GoTxt50_12.current.valid);
             }
 
             printCsvValue(baroRaw, AxesAndSigs.barometerSig, "Raw", lineT,
@@ -297,13 +298,13 @@ public class Record_2048 extends Record {
             printCsvValue(baroSmooth, AxesAndSigs.barometerSig, "Smooth", lineT,
                     valid);
 
-            if (GoTxt_12.current != null) {
-                printCsvValue(GoTxt_12.current.vpsHeight, GoTxt_12.vpsHeightSig,
-                        "", lineT,
-                        GoTxt_12.current.valid & GoTxt_12.current.waveWork);
+            if (GoTxt50_12.current != null) {
+                printCsvValue(GoTxt50_12.current.vpsHeight,
+                        GoTxt50_12.vpsHeightSig, "", lineT,
+                        GoTxt50_12.current.valid & GoTxt50_12.current.waveWork);
             }
             printCsvValue(convertDat.getRelativeHeight(),
-                    GoTxt_12.relativeHeightSig, "", lineT,
+                    GoTxt50_12.relativeHeightSig, "", lineT,
                     convertDat.isRelativeHeightOK());
 
             printCsvValue(convertDat.getAbsoluteHeight(), "absoluteHeight",
@@ -381,8 +382,20 @@ public class Record_2048 extends Record {
                 distanceHP = Util.distance(latRad, longRad,
                         convertDat.latitudeHP, convertDat.longitudeHP);
             }
-            printCsvValue(magYaw.getDegrees(), AxesAndSigs.magYawSig, "", lineT,
-                    valid);
+            printCsvValue(magYaw.getDegrees(), AxesAndSigs.magSig, "magYaw",
+                    lineT, valid);
+            if (Persist.magCalcs) {
+                double diff = 0.0;
+                if (yaw > magYaw.getDegrees() + 180) {
+                    diff = magYaw.getDegrees() - yaw + 360.0;
+                } else if (yaw < magYaw.getDegrees() - 180) {
+                    diff = magYaw.getDegrees() - yaw - 360.0;
+                } else {
+                    diff = magYaw.getDegrees() - yaw;
+                }
+                printCsvValue(diff, AxesAndSigs.magYawDiffSig, "", lineT,
+                        valid);
+            }
             printCsvValue(distanceHP, AxesAndSigs.distanceHPSig, "", lineT,
                     convertDat.validHP);
             printCsvValue(distanceTravelled, AxesAndSigs.distanceTravelledSig,

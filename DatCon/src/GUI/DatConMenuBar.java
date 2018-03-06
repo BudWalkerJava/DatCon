@@ -40,6 +40,7 @@ import src.Files.DatConLog;
 import src.Files.Persist;
 import src.apps.DatCon;
 
+@SuppressWarnings("serial")
 public class DatConMenuBar extends JMenuBar implements ActionListener {
     JMenuItem fileOpenMenuItem = null;
 
@@ -79,7 +80,7 @@ public class DatConMenuBar extends JMenuBar implements ActionListener {
         JMenu fileMenu = new JMenu("File");
         JMenu preferencesMenu = new JMenu("Preferences");
         JMenu categoriesMenu = new FieldCategories("Categories");
-        JMenu parsingModeMenu = new ParsingMode("ParsingMode" + "");
+        JMenu parsingModeMenu = new ParsingMode("Parsing Options");
 
         JMenu version = new JMenu("Version " + DatCon.version);
         JMenu helpMenu = new JMenu("Help");
