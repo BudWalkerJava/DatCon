@@ -27,20 +27,5 @@ public class MotorCtrl35_54 extends MotorControl {
             RecordException(e);
         }
     }
-    //
-    //    public void printCols(lineType lineT) {
-    //        try {
-    //            printCsvValue(pwm1, ctrl_motorIntSig, "pwm_1", lineT, valid);
-    //            printCsvValue(pwm2, ctrl_motorIntSig, "pwm_2", lineT, valid);
-    //            printCsvValue(pwm3, ctrl_motorIntSig, "pwm_3", lineT, valid);
-    //            printCsvValue(pwm4, ctrl_motorIntSig, "pwm_4", lineT, valid);
-    //            printCsvValue(pwm5, ctrl_motorIntSig, "pwm_5", lineT, valid);
-    //            printCsvValue(pwm6, ctrl_motorIntSig, "pwm_6", lineT, valid);
-    //            printCsvValue(pwm7, ctrl_motorIntSig, "pwm_7", lineT, valid);
-    //            printCsvValue(pwm8, ctrl_motorIntSig, "pwm_8", lineT, valid);
-    //        } catch (Exception e) {
-    //            DatConLog.Exception(e);
-    //        }
-    //    }
-
+    
 }

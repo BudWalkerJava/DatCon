@@ -24,6 +24,7 @@ package src.DatConRecs.Created4V3;
 import src.DatConRecs.Payload;
 import src.Files.ConvertDat;
 import src.Files.DatConLog;
+import src.Files.Persist;
 import src.Files.ConvertDat.lineType;
 
 public class RecRCStat18_1700 extends RCStatus {
@@ -43,6 +44,10 @@ public class RecRCStat18_1700 extends RCStatus {
             rec_cnt = ((long) payloadBB.getInt(7) & 0xffffffffL);
             connected = ((payloadBB.get(13) == 1) ? "Connected"
                     : "Disconnected");
+            //            if (Persist.EXPERIMENTAL_DEV) {
+            //                System.out.println(
+            //                        "XXX " + convertDat.getTime() + "  " + frame_lost);
+            //            }
             super.common();
         } catch (Exception e) {
             RecordException(e);

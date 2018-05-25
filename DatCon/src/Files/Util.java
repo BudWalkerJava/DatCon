@@ -1,22 +1,3 @@
-/* Util class
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that redistribution of source code include
-the following disclaimer in the documentation and/or other materials provided
-with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY ITS CREATOR "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE CREATOR OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package src.Files;
 
 import java.io.File;
@@ -28,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-
-import src.DatConRecs.RecDef.OpConfig;
 
 public class Util {
 
@@ -86,6 +65,7 @@ public class Util {
      * @throws ClassNotFoundException
      * @throws IOException
      */
+    @SuppressWarnings("rawtypes")
     private static Class[] getClasses(String packageName)
             throws ClassNotFoundException, IOException {
         ClassLoader classLoader = Thread.currentThread()
@@ -113,6 +93,7 @@ public class Util {
      * @return The classes
      * @throws ClassNotFoundException
      */
+    @SuppressWarnings("rawtypes")
     private static List<Class> findClasses(File directory, String packageName)
             throws ClassNotFoundException {
         List<Class> classes = new ArrayList<Class>();
@@ -133,6 +114,7 @@ public class Util {
         return classes;
     }
 
+    @SuppressWarnings("rawtypes")
     public static void main(String[] args) throws IOException {
         try {
             Class[] classes = getClasses("src.DatConRecs.Created4V3");

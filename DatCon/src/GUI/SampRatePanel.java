@@ -21,6 +21,8 @@ package src.GUI;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.util.Vector;
 
@@ -30,6 +32,7 @@ import javax.swing.JPanel;
 
 import src.Files.ConvertDat;
 import src.Files.FileBeingUsed;
+import src.Files.Persist;
 import src.apps.DatCon;
 
 public class SampRatePanel extends JPanel implements IDatConPanel {
@@ -42,7 +45,7 @@ public class SampRatePanel extends JPanel implements IDatConPanel {
 
     Vector<Integer> sampRateVector = new Vector<Integer>();
 
-    int sampRates[] = { 1, 2, 5, 10, 20, 30, 50, 60, 100, 200 };
+    int sampRates[] = { 1, 2, 5, 10, 20, 30, 50, 60, 100, 200, Integer.MAX_VALUE };
 
     public SampRatePanel() {
     }
@@ -53,9 +56,10 @@ public class SampRatePanel extends JPanel implements IDatConPanel {
         for (int i = 0; i < sampRates.length; i++) {
             sampRateVector.add(new Integer(sampRates[i]));
         }
-        sampRateVector.add(Integer.MAX_VALUE);
+        //sampRateVector.add(Integer.MAX_VALUE);
+        //        sampRateVector.add("MAX");
         sampRateChooser = new JComboBox<Integer>(sampRateVector);
-        setRate(30);
+        setRate(Persist.csvSampleRate);
         setLayout(new GridBagLayout());
         setOpaque(true);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -71,7 +75,12 @@ public class SampRatePanel extends JPanel implements IDatConPanel {
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         add(sampRateChooser, gbc);
-        sampRateChooser.addActionListener(datCon);
+        sampRateChooser.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Persist.csvSampleRate = getRate();
+                Persist.save();
+            }
+        });
 
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -80,10 +89,14 @@ public class SampRatePanel extends JPanel implements IDatConPanel {
 
     public void setRate(int rate) {
         sampRateChooser.setSelectedItem(new Integer(rate));
+        Persist.save();
     }
 
     public int getRate() {
-        return ((Integer) sampRateChooser.getSelectedItem()).intValue();
+        Object chosen = sampRateChooser.getSelectedItem();
+        if (chosen instanceof Integer)
+            return ((Integer) chosen).intValue();
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -106,5 +119,4 @@ public class SampRatePanel extends JPanel implements IDatConPanel {
     public void createFileNames(String flyFileNameRoot) {
         // Never called                
     }
-
 }

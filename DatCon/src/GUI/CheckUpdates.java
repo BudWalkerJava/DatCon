@@ -89,7 +89,27 @@ public class CheckUpdates implements ActionListener {
 
     private String getNewestVersion() {
         String retv = "";
-       
+        URL url;
+        try {
+            url = new URL("https://datfile.net/versions.php?version="
+                    + DatCon.version);
+            // Get the input stream through URL Connection
+            URLConnection con = url.openConnection();
+            InputStream is = con.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            String line = null;
+
+            while ((line = br.readLine()) != null) {
+                if (line.indexOf("DatCon.currentVersion:") >= 0) {
+                    retv = line.substring(line.lastIndexOf(":") + 1);
+                    return retv;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return retv;
     }
 

@@ -9,18 +9,18 @@ public class RecClassSpec extends RecSpec {
     int lengths[] = null;
 
     @SuppressWarnings("unchecked")
-    public RecClassSpec(Class recClass, int id, int length) {
+    public RecClassSpec(Class<?> recClass, int id, int length) {
         super(id, length);
-        this.recClass = recClass;
+        this.recClass = (Class<Record>) recClass;
         if (length == -1) {
             setRecType(RecType.STRING);
         }
     }
 
     @SuppressWarnings("unchecked")
-    public RecClassSpec(Class recClass, int id, int... lengths) {
+    public RecClassSpec(Class<?> recClass, int id, int... lengths) {
         super(id, -1);
-        this.recClass = recClass;
+        this.recClass = (Class<Record>) recClass;
         this.lengths = new int[lengths.length];
         for (int i = 0; i < lengths.length; i++) {
             this.lengths[i] = lengths[i];

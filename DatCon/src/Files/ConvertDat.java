@@ -32,12 +32,11 @@ import java.util.Vector;
 import src.DatConRecs.*;
 import src.Files.DatHeader.AcType;
 import src.apps.DatCon;
+import src.DatConRecs.RecDef.RecordDef;
 
 public class ConvertDat {
 
     public DatFile _datFile = null;
-
-    //protected FileEnd _fileEnd = new FileEnd();
 
     public long tickNo = 0;
 
@@ -51,7 +50,11 @@ public class ConvertDat {
 
     public Vector<Record> records = new Vector<Record>();
 
-    public int kmlType = -1; // -1 = none, 0 = groundTrack, 1 = profile
+    public enum KmlType {
+        NONE, GROUNDTRACK, PROFILE
+    };
+
+    public KmlType kmlType = KmlType.NONE;
 
     public File kmlFile;
 
@@ -100,52 +103,13 @@ public class ConvertDat {
         HEADER, LINE, XML
     };
 
-    //    private int numMotors = 4;
-    //
-    //    public void setNumNotors(int i) {
-    //        numMotors = i;
-    //    }
-
     public int getNumMotors() {
-        if (_datFile.acType == AcType.M600) {
+        if (_datFile.acType == AcType.M600 || _datFile.acType == AcType.S900) {
             return 6;
         }
         return 4;
     }
 
-    //    public void printCsvValue(String header, float value, lineType lineT,
-    //            boolean valid) throws IOException {
-    //        if (lineT == lineType.HEADER) {
-    //            csvWriter.print("," + header);
-    //        } else {
-    //            csvWriter.print(",");
-    //            if (valid)
-    //                csvWriter.print("" + value);
-    //        }
-    //    }
-
-    //    public void printCsvValue(String header, double value, lineType lineT,
-    //            boolean valid) throws IOException {
-    //        if (lineT == lineType.HEADER) {
-    //            csvWriter.print("," + header);
-    //        } else {
-    //            csvWriter.print(",");
-    //            if (valid)
-    //                csvWriter.print("" + value);
-    //        }
-    //    }
-
-    //    public void printCsvValue(String header, int value, lineType lineT,
-    //            boolean valid) throws IOException {
-    //        if (lineT == lineType.HEADER) {
-    //            csvWriter.print("," + header);
-    //        } else {
-    //            csvWriter.print(",");
-    //            if (valid)
-    //                csvWriter.print("" + value);
-    //        }
-    //    }
-    //
     private void printCsvValue(String header, String value, lineType lineT,
             boolean valid) throws IOException {
         if (lineT == lineType.HEADER) {
@@ -156,22 +120,6 @@ public class ConvertDat {
                 csvWriter.print("" + value.trim());
         }
     }
-
-    //    public void printCsvValue(String header, boolean value, lineType lineT,
-    //            boolean valid) throws IOException {
-    //        if (lineT == lineType.HEADER) {
-    //            csvWriter.print("," + header);
-    //        } else {
-    //            csvWriter.print(",");
-    //            if (valid) {
-    //                if (value) {
-    //                    csvWriter.print("1");
-    //                } else {
-    //                    csvWriter.print("0");
-    //                }
-    //            }
-    //        }
-    //    }
 
     LinkedList<AttrValuePair> attrVaulePairs = new LinkedList<AttrValuePair>();
 
@@ -200,23 +148,55 @@ public class ConvertDat {
 
     public boolean gpsCoordsOK = false;
 
-    public double longitudeHPDegrees;
+    private double longitudeHPDegrees;
 
-    public double latitudeHPDegrees;
+    public double getHPLongDeg() {
+        return longitudeHPDegrees;
+    }
 
-    public double declination = 0.0;
+    private double latitudeHPDegrees;
 
-    public double inclination = 0.0;
+    public double getHPLatDeg() {
+        return latitudeHPDegrees;
+    }
 
-    public double intensity = 0.0;
+    private boolean validHP = false;
 
-    public float heightHP = 0.0f;
+    public boolean isHpValid() {
+        return validHP;
+    }
 
-    public double longitudeHP = 0.0;
+    private double geoDeclination = 0.0;
 
-    public double latitudeHP = 0.0;
+    public double getGeoDeclination() {
+        return geoDeclination;
+    }
 
-    public boolean validHP = false;
+    private double geoInclination = 0.0;
+
+    public double getGeoInclination() {
+        return geoInclination;
+    }
+
+    private double geoIntensity = 0.0;
+
+    private float heightHP = 0.0f;
+
+    public float getHPHeight() {
+        return heightHP;
+    }
+
+    private double longitudeHP = 0.0;
+
+    public double getHPLongRad() {
+        return longitudeHP;
+    }
+
+    private double latitudeHP = 0.0;
+
+    public double getHPLatRad() {
+        return latitudeHP;
+    }
 
     public void setRecords(Vector<Record> recs) {
         records = recs;
@@ -230,38 +210,45 @@ public class ConvertDat {
         GoTxt50_12.current = null;
         Vector<Record> rcrds = new Vector<Record>();
         try {
-            int numRecParsers = 0;
-            int numFound = 0;
+            int numNoRecParsers = 0;
+            int numCreatedParsers = 0;
+            @SuppressWarnings("unchecked")
             HashMap<Integer, RecSpec> recsInDat = (HashMap<Integer, RecSpec>) _datFile
                     .getRecsInDat().clone();
 
             Iterator<RecSpec> recInDatIter = recsInDat.values().iterator();
             while (recInDatIter.hasNext()) {
                 RecSpec recInDat = recInDatIter.next();
-                Record recordInst = getRecordInst(recInDat);
-                numRecParsers++;
-                if (recordInst != null) {
-                    int recInstLength = recordInst.getLength();
-                    if (recInstLength <= recInDat.getLength()) { // recInstLength == -1 means it's a RecType.STRING
-                        rcrds.addElement(recordInst);
-                        numFound++;
-                        DatConLog.Log("Add RecParser #" + numRecParsers + " "
-                                + recordInst.getClassDescription());
-                    } else {
-                        DatConLog.Log(" Wrong length RecParser #"
-                                + numRecParsers + " RecInDat Id/Length ="
-                                + recInDat.getId() + "/" + recInDat.getLength()
-                                + " RecInst/length =" + recordInst.getName()
-                                + "//" + recInstLength);
+                Vector<Record> recordInstVec = getRecordInst(recInDat);
+                if (recordInstVec != null && recordInstVec.size() > 0) {
+                    for (int recordInstVecIndex = 0; recordInstVecIndex < recordInstVec
+                            .size(); recordInstVecIndex++) {
+                        Record recordInst = recordInstVec
+                                .get(recordInstVecIndex);
+                        int recInstLength = recordInst.getLength();
+                        if (recInstLength <= recInDat.getLength()) { // recInstLength == -1 means it's a RecType.STRING
+                            rcrds.addElement(recordInst);
+                            numCreatedParsers++;
+                            DatConLog.Log("Add RecParser #" + numCreatedParsers
+                                    + " " + recordInst.getClassDescription());
+                        } else {
+                            DatConLog.Log(" Wrong length RecParser #"
+                                    + numNoRecParsers + " RecInDat Id/Length ="
+                                    + recInDat.getId() + "/"
+                                    + recInDat.getLength() + " RecInst/length ="
+                                    + recordInst.getName() + "//"
+                                    + recInstLength);
+                        }
                     }
                 } else {
-                    DatConLog.Log("No RecParser #" + numRecParsers + " RecId "
+                    numNoRecParsers++;
+                    DatConLog.Log("No RecParser #" + numNoRecParsers + " RecId "
                             + recInDat + "/" + recInDat.getLength());
                 }
             }
-            DatConLog.Log("CreateParsers found " + numFound);
+            DatConLog.Log("Num of created parsers " + numCreatedParsers
+                    + " Num of NoRecParsers " + numNoRecParsers);
             //now sort the records
-            Vector<Record> otherRecs = new Vector<Record>();
             Iterator<Integer> iter = Dictionary.defaultOrder.iterator();
             while (iter.hasNext()) {
                 int recId = iter.next().intValue();
@@ -269,7 +256,7 @@ public class ConvertDat {
                 Iterator<Record> recordIter = rcrds.iterator();
                 while (recordIter.hasNext()) {
                     Record rcrd = recordIter.next();
-                    if (rcrd.getId() == recId) {
+                    if (rcrd.getId() == recId && !(rcrd instanceof RecordDef)) {
                         records.add(rcrd);
                         foundRecord = rcrd;
                     }
@@ -289,7 +276,7 @@ public class ConvertDat {
         }
     }
 
-    protected Record getRecordInst(RecSpec recSpec) {
+    protected Vector<Record> getRecordInst(RecSpec recSpec) {
         throw new RuntimeException("ConvertDat.getRecordInst(RecInDat  called");
     }
 
@@ -333,10 +320,10 @@ public class ConvertDat {
             this.relativeHeight = relativeHeight;
             this.relativeHeightOK = true;
         }
-        if (kmlType >= 0 && tickRangeLower <= tickNo) {
+        if (kmlType != KmlType.NONE && tickRangeLower <= tickNo) {
             if (gpsCoordsOK) {
                 float alt = relativeHeight;
-                if (kmlType == 1) {
+                if (kmlType == KmlType.PROFILE) {
                     alt += homePointElevation;
                     absoluteHeight = alt;
                     absoluteHeightValid = true;
@@ -348,19 +335,19 @@ public class ConvertDat {
     }
 
     public void processCoordsNoGoTxt(double longitudeDegrees,
-            double latitudeDegrees, float baroSmooth) {
+            double latitudeDegrees, float baroRaw) {
         if (!gpsCoordsOK) {
             gpsCoordsOK = (longitudeDegrees != 0.0 && latitudeDegrees != 0.0);
         }
         if (!Double.isNaN(takeOffAlt)) {
-            relativeHeight = baroSmooth - takeOffAlt;
+            relativeHeight = baroRaw - takeOffAlt;
             relativeHeightOK = true;
         }
-        if (kmlType >= 0 && tickRangeLower <= tickNo) {
+        if (kmlType != KmlType.NONE && tickRangeLower <= tickNo) {
             if (gpsCoordsOK) {
                 if (relativeHeightOK) {
                     float alt = (float) relativeHeight;
-                    if (kmlType == 1) {
+                    if (kmlType == KmlType.PROFILE) {
                         alt += homePointElevation;
                         absoluteHeight = alt;
                         absoluteHeightValid = true;
@@ -386,32 +373,20 @@ public class ConvertDat {
         longitudeHP = Math.toRadians(longitudeHPDegrees);
         latitudeHP = Math.toRadians(latitudeHPDegrees);
         validHP = true;
-        if (declination == 0.0) {
-            declination = geoMag.getDeclination(latitudeHPDegrees,
+        if (geoDeclination == 0.0) {
+            geoDeclination = geoMag.getDeclination(latitudeHPDegrees,
                     longitudeHPDegrees);
             addAttrValuePair("geoDeclination",
-                    String.format("%1$2.2f degrees", declination));
-            inclination = geoMag.getDipAngle(latitudeHPDegrees,
+                    String.format("%1$2.2f degrees", geoDeclination));
+            geoInclination = geoMag.getDipAngle(latitudeHPDegrees,
                     longitudeHPDegrees);
             addAttrValuePair("geoInclination",
-                    String.format("%1$2.2f degrees", inclination));
-            intensity = geoMag.getIntensity(latitudeHPDegrees,
+                    String.format("%1$2.2f degrees", geoInclination));
+            geoIntensity = geoMag.getIntensity(latitudeHPDegrees,
                     longitudeHPDegrees);
             addAttrValuePair("geoIntensity",
-                    String.format("%1$2.2f nanoTesla", intensity));
+                    String.format("%1$2.2f nanoTesla", geoIntensity));
         }
-    }
-
-    public double getHPLat() {
-        return latitudeHPDegrees;
-    }
-
-    public double getHPLong() {
-        return longitudeHPDegrees;
-    }
-
-    public boolean isHpValid() {
-        return validHP;
     }
 
     public void setTakeOffAlt(double takeOffAlt) {

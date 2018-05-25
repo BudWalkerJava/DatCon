@@ -1,37 +1,22 @@
 package src.Files;
 
-import src.DatConRecs.Record_2048;
+import src.DatConRecs.RecIMU;
 
 public class MagYaw {
-
-    //private double magYaw = 0.0;
 
     private static boolean debug = false;
 
     static double halfInterval = 3.0;
 
-    //    private RealInterval magYawRIDegrees = null;
-    //private RealInterval magYawRI = null;
-
     private double magYawDegrees;
-
-    //    double X1 = 0.0;
-    //
-    //    double X2 = 0.0;
-    //
-    //    double X10 = 0.0;
-    //
-    //    double X11 = 0.0;
-    //
-    //    double X12 = 0.0;
 
     public static double compute(short magX, short magY, short magZ,
             float magMod) {
         double xmag = ((double) magX) / magMod;
         double ymag = ((double) magY) / magMod;
         double zmag = ((double) magZ) / magMod;
-        double pitch = Record_2048.current.getPitchRadians();
-        double roll = Record_2048.current.getRollRadians();
+        double pitch = RecIMU.current.getPitchRadians();
+        double roll = RecIMU.current.getRollRadians();
 
         double magYaw = Math.atan2(
                 (-ymag * Math.cos(roll) + zmag * Math.sin(roll)),
@@ -46,11 +31,6 @@ public class MagYaw {
         double xmag = ((double) magX) / magMod;
         double ymag = ((double) magY) / magMod;
         double zmag = ((double) magZ) / magMod;
-        //        X1 = (-ymag * Math.cos(roll) + zmag * Math.sin(roll));
-        //        X10 = (xmag * Math.cos(pitch));
-        //        X11 = ymag * Math.sin(pitch) * Math.sin(roll);
-        //        X12 = zmag * Math.sin(pitch) * Math.cos(roll);
-        //        X2 = X10 + X11 + X12;
 
         double magYaw = Math.atan2(
                 (-ymag * Math.cos(roll) + zmag * Math.sin(roll)),
@@ -77,6 +57,29 @@ public class MagYaw {
     public double getDegrees() {
         return magYawDegrees;
     }
- 
+
+    //    private double accelYawDegrees = 0.0;
+    //
+    //    public double getAccelYawDegrees() {
+    //        return accelYawDegrees;
+    //    }
+    //
+    //    private double accelMod = 0.0;
+    //
+    //    public double getAccelMod() {
+    //        return accelMod;
+    //    }
+    //
+    //    public void computeAccel(double pitch, double roll, float accelX,
+    //            float accelY, float accelZ, double dt) {
+    //        double accelYaw = Math.atan2(
+    //                (-accelY * Math.cos(roll) + accelZ * Math.sin(roll)),
+    //                (accelX * Math.cos(pitch)
+    //                        + accelY * Math.sin(pitch) * Math.sin(roll)
+    //                        + accelZ * Math.sin(pitch) * Math.cos(roll)));
+    //        accelYawDegrees = Math.toDegrees(accelYaw);
+    //        accelMod = Math.sqrt(accelX * accelX + accelY * accelY
+    //                + (accelZ + 1.0) * (accelZ + 1.0));
+    //    }
 
 }

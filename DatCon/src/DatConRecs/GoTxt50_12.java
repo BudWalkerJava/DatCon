@@ -316,7 +316,8 @@ public class GoTxt50_12 extends Record {
         NGPE = ngc.name();
         GoTxt50_12.FLYC_STATE fs = GoTxt50_12.FLYC_STATE.find(flyc_state);
         FLCS = fs.name();
-        GoTxt50_12.FLIGHT_ACTION fa = GoTxt50_12.FLIGHT_ACTION.find(flight_action);
+        GoTxt50_12.FLIGHT_ACTION fa = GoTxt50_12.FLIGHT_ACTION
+                .find(flight_action);
         FLACTION = fa.name();
         GoTxt50_12.FLYC_COMMAND fc = GoTxt50_12.FLYC_COMMAND.find(flycCommand);
         FLYCCOMMAND = fc.name();
@@ -342,11 +343,11 @@ public class GoTxt50_12 extends Record {
         }
     }
 
-    public static Signal flightTimeSig = Signal.SeriesInt("flightTime",
-            "Flight Time", null, Units.msec);
-
-    public static Signal gpsHealthSig = Signal.SeriesInt("gpsHealth",
-            "GPS Health", null, Units.gpsHealth);
+//    public static Signal flightTimeSig = Signal.SeriesInt("flightTime",
+//            "Flight Time", null, Units.msec);
+//
+//    public static Signal gpsHealthSig = Signal.SeriesInt("gpsHealth",
+//            "GPS Health", null, Units.gpsHealth);
 
     public static Signal vpsHeightSig = Signal.SeriesDouble("vpsHeight",
             "vps Height", null, Units.meters);
@@ -382,14 +383,13 @@ public class GoTxt50_12 extends Record {
     private static Signal visionUsedSig = Signal.State("visionUsed",
             "Vision Used for Horizontal Speed", "True");
 
-    //    private static Signal attExpSig = Signal.SeriesFloatExperimental(
-    //            "attitudeExperimental", "AttitudeExp", null, Units.degrees);
+    private static Signal attExpSig = Signal.SeriesFloatExperimental(
+            "attitudeExperimental", "AttitudeExp", null, Units.degrees);
 
     @Override
     public void printCols(lineType lineT) {
         try {
             setStateStrings();
-            //printCsvValue(flyc_state, "flycState", lineT, valid);
             printCsvValue(FLCS, flyCStateSig, "", lineT, valid);
             printCsvValue(FLYCCOMMAND, flyCCommandSig, "", lineT, valid);
             printCsvValue(FLACTION, flightActionSig, "", lineT, valid);
@@ -401,6 +401,9 @@ public class GoTxt50_12 extends Record {
             printCsvValue(ModeSwitch, rcModeSwitchSig, "", lineT, true);
             printCsvValue(gpsUsedString, gpsUsedSig, "", lineT, valid);
             printCsvValue(visionUsedString, visionUsedSig, "", lineT, valid);
+            printCsvValue(pitch, attExpSig, "pitch", lineT, valid);
+            printCsvValue(roll, attExpSig, "roll", lineT, valid);
+            printCsvValue(yaw, attExpSig, "yaw", lineT, valid);
         } catch (Exception e) {
             DatConLog.Exception(e);
         }

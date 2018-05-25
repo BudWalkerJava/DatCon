@@ -135,33 +135,83 @@ public class ConvertDatV3 extends ConvertDat {
     }
 
     @Override
-    protected Record getRecordInst(RecSpec recInDat) {
-        Record retv = null;
-        retv = Dictionary.getRecordInst(
-                src.DatConRecs.String.Dictionary.entries, recInDat, this, true);
-        if (retv != null) {
+    protected Vector<Record> getRecordInst(RecSpec recInDat) {
+        Vector<Record> retv = new Vector<Record>();
+        Record rec = null;
+        rec = Dictionary.getRecordInst(src.DatConRecs.String.Dictionary.entries,
+                recInDat, this, true);
+        if (rec != null) {
+            retv.add(rec);
             return retv;
         }
         switch (Persist.parsingMode) {
         case DAT_THEN_ENGINEERED:
-            retv = getRecordInstFromDat(recInDat);
-            if (retv != null) {
-                return retv;
+            rec = getRecordInstFromDat(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            } else {
+                rec = getRecordInstEngineered(recInDat);
+                if (rec != null) {
+                    retv.add(rec);
+                }
             }
-            return getRecordInstEngineered(recInDat);
         case ENGINEERED_THEN_DAT:
-            retv = getRecordInstEngineered(recInDat);
-            if (retv != null) {
-                return retv;
+            rec = getRecordInstEngineered(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            } else {
+                rec = getRecordInstFromDat(recInDat);
+                if (rec != null) {
+                    retv.add(rec);
+                }
             }
-            return getRecordInstFromDat(recInDat);
+            break;
         case JUST_DAT:
-            return getRecordInstFromDat(recInDat);
+            rec = getRecordInstFromDat(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            }
+            break;
         case JUST_ENGINEERED:
-            return getRecordInstEngineered(recInDat);
+            rec = getRecordInstEngineered(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            }
+            break;
+        case ENGINEERED_AND_DAT:
+            rec = getRecordInstEngineered(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            }
+            rec = getRecordInstFromDat(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            }
+            break;
         default:
-            return null;
+            return retv;
         }
+        return retv;
+        //        switch (Persist.parsingMode) {
+        //        case DAT_THEN_ENGINEERED:
+        //            retv = getRecordInstFromDat(recInDat);
+        //            if (retv != null) {
+        //                return retv;
+        //            }
+        //            return getRecordInstEngineered(recInDat);
+        //        case ENGINEERED_THEN_DAT:
+        //            retv = getRecordInstEngineered(recInDat);
+        //            if (retv != null) {
+        //                return retv;
+        //            }
+        //            return getRecordInstFromDat(recInDat);
+        //        case JUST_DAT:
+        //            return getRecordInstFromDat(recInDat);
+        //        case JUST_ENGINEERED:
+        //            return getRecordInstEngineered(recInDat);
+        //        default:
+        //            return null;
+        //        }
     }
 
     private Record getRecordInstEngineered(RecSpec recInDat) {

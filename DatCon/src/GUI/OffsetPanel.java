@@ -33,6 +33,7 @@ import javax.swing.JRadioButton;
 import javax.swing.border.LineBorder;
 
 import src.Files.DatFile;
+import src.Files.Persist;
 import src.Files.DatConLog;
 
 public class OffsetPanel extends JPanel implements ActionListener {
@@ -106,13 +107,17 @@ public class OffsetPanel extends JPanel implements ActionListener {
         tap.offset = 0;
         if (motorStartTick != 0) {
             motorStart.setEnabled(true);
-            motorStart.setSelected(true);
-            tap.offset = datFile.firstMotorStartTick;
+            if (Persist.smartTimeAxis) {
+                motorStart.setSelected(true);
+                tap.offset = datFile.firstMotorStartTick;
+            }
         }
         if (flightStartTick != -1) {
             flightStart.setEnabled(true);
-            flightStart.setSelected(true);
-            tap.offset = datFile.flightStartTick;
+            if (Persist.smartTimeAxis) {
+                flightStart.setSelected(true);
+                tap.offset = datFile.flightStartTick;
+            }
         }
     }
 

@@ -33,17 +33,17 @@ public class Signal {
         return signals;
     }
 
-    private Signal(String name, String description, Axis axis, SigType sigType,
-            NumType numType, boolean experimental, Units units) {
-        this.name = name;
-        this.description = description;
-        this.axis = axis;
-        this.sigType = sigType;
-        this.numType = numType;
-        this.experimental = experimental;
-        this.units = units;
-        signals.add(this);
-    }
+    //    private Signal(String name, String description, Axis axis, SigType sigType,
+    //            NumType numType, boolean experimental, Units units) {
+    //        this.name = name;
+    //        this.description = description;
+    //        this.axis = axis;
+    //        this.sigType = sigType;
+    //        this.numType = numType;
+    //        this.experimental = experimental;
+    //        this.units = units;
+    //        signals.add(this);
+    //    }
 
     public static Signal State(String name, String description,
             String defaultState) {
@@ -78,13 +78,12 @@ public class Signal {
         signals.add(this);
     }
 
-    private Signal(String name, String description, Axis axis, SigType sigType,
-            NumType numType) {
-        this(name, description, axis, sigType, numType, false, Units.noUnits);
-    }
+    //    private Signal(String name, String description, Axis axis, SigType sigType,
+    //            NumType numType) {
+    //        this(name, description, axis, sigType, numType, false, Units.noUnits);
+    //    }
 
     public Signal() {
-        // TODO Auto-generated constructor stub
         signals.add(this);
     }
 
@@ -92,6 +91,13 @@ public class Signal {
             Axis axis, Units units) {
         Signal retv = new Signal(name, description, axis, SigType.SERIES,
                 NumType.DOUBLE, units);
+        return retv;
+    }
+
+    public static Signal SeriesDouble(String name, int index,
+            String description, Axis axis, Units units) {
+        Signal retv = new Signal(name + "(" + index + ")", description, axis,
+                SigType.SERIES, NumType.DOUBLE, units);
         return retv;
     }
 
@@ -103,6 +109,14 @@ public class Signal {
         return retv;
     }
 
+    public static Signal SeriesDoubleExperimental(String name, int index,
+            String description, Axis axis, Units units) {
+        Signal retv = new Signal(name + "(" + index + ")", description, axis,
+                SigType.SERIES, NumType.DOUBLE, units);
+        retv.experimental = true;
+        return retv;
+    }
+
     public static Signal SeriesFloat(String name, String description, Axis axis,
             Units units) {
         Signal retv = new Signal(name, description, axis, SigType.SERIES,
@@ -110,10 +124,40 @@ public class Signal {
         return retv;
     }
 
+    public static Signal SeriesFloat(String name, int index, String description,
+            Axis axis, Units units) {
+        Signal retv = new Signal(name + "(" + index + ")", description, axis,
+                SigType.SERIES, NumType.FLOAT4, units);
+        return retv;
+    }
+
+    public static Signal SeriesFloatExperimental(String name,
+            String description, Axis axis, Units units) {
+        Signal retv = new Signal(name, description, axis, SigType.SERIES,
+                NumType.FLOAT4, units);
+        retv.experimental = true;
+        return retv;
+    }
+
+    public static Signal SeriesFloatExperimental(String name, int index,
+            String description, Axis axis, Units units) {
+        Signal retv = new Signal(name + "(" + index + ")", description, axis,
+                SigType.SERIES, NumType.FLOAT4, units);
+        retv.experimental = true;
+        return retv;
+    }
+
     public static Signal SeriesInt(String name, String description, Axis axis,
             Units units) {
         Signal retv = new Signal(name, description, axis, SigType.SERIES,
                 NumType.INT, units);
+        return retv;
+    }
+
+    public static Signal SeriesInt(String name, int index, String description,
+            Axis axis, Units units) {
+        Signal retv = new Signal(name + "(" + index + ")", description, axis,
+                SigType.SERIES, NumType.INT, units);
         return retv;
     }
 
@@ -125,10 +169,10 @@ public class Signal {
         return retv;
     }
 
-    public static Signal SeriesFloatExperimental(String name,
+    public static Signal SeriesIntExperimental(String name, int index,
             String description, Axis axis, Units units) {
-        Signal retv = new Signal(name, description, axis, SigType.SERIES,
-                NumType.FLOAT4, units);
+        Signal retv = new Signal(name + "(" + index + ")", description, axis,
+                SigType.SERIES, NumType.INT, units);
         retv.experimental = true;
         return retv;
     }

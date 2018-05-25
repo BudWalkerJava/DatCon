@@ -19,6 +19,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package src.DatConRecs.Created4V3;
 
 import src.DatConRecs.Payload;
+import src.DatConRecs.RecBatt;
 import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
 import src.Files.ConvertDat.lineType;
@@ -32,14 +33,14 @@ public class RecBatt26_5000 extends RecBatt {
     public static RecBatt26_5000 current = null;
 
     public RecBatt26_5000(ConvertDat convertDat) {
-        super(convertDat, 5000, 26);
+        super(convertDat, 5000, 26, 0);
     }
+//
+//    public short batteryPercent = 0;
 
-    public short batteryPercent = 0;
-
-    private float fcc = 0.0f;
-
-    private float remcap = 0.0f;
+//    private float fcc = 0.0f;
+//
+//    private float remcap = 0.0f;
 
     private int status1 = 0;
 
@@ -101,24 +102,25 @@ public class RecBatt26_5000 extends RecBatt {
 
     @Override
     public void printCols(lineType lineT) {
+        super.printCols(lineT);
         try {
-            for (int i = 0; i < numCells; i++) {
-                printCsvValue(volt[i], AxesAndSigs.cellVoltSig, "" + (i + 1),
-                        lineT, valid);
-            }
-            printCsvValue(crrnt, AxesAndSigs.currentSig, "", lineT, valid);
-            printCsvValue(totalVolts, AxesAndSigs.voltsSig, "total", lineT,
-                    valid);
-            printCsvValue(batteryPercent, AxesAndSigs.battPercent, "", lineT,
-                    valid);
-            printCsvValue(fcc, AxesAndSigs.batteryFCC, "", lineT, valid);
-            printCsvValue(remcap, AxesAndSigs.batteryRemCap, "", lineT, valid);
-            printCsvValue(temp, AxesAndSigs.batteryTempSig, "", lineT, valid);
-            printCsvValue(status1, statusSig, "1", lineT, true);
-            printCsvValue(status2, statusSig, "2", lineT, true);
-            printCsvValue(status3, statusSig, "3", lineT, true);
-            printCsvValue(status4, statusSig, "4", lineT, true);
-            printComputedBattCols(lineT);
+            //            for (int i = 0; i < numCells; i++) {
+            //                printCsvValue(volt[i], cellVoltSig, "" + (i + 1),
+            //                        lineT, valid);
+            //            }
+            //            printCsvValue(crrnt, currentSig, "", lineT, valid);
+            //            printCsvValue(totalVolts, voltsSig, "total", lineT,
+            //                    valid);
+            //            printCsvValue(batteryPercent, battPercent, "", lineT,
+            //                    valid);
+            //            printCsvValue(fcc, batteryFCC, "", lineT, valid);
+            //            printCsvValue(remcap, batteryRemCap, "", lineT, valid);
+            //            printCsvValue(temp, batteryTempSig, "", lineT, valid);
+            printCsvValue(status1, statusSig, "status1", lineT, true);
+            printCsvValue(status2, statusSig, "status2", lineT, true);
+            printCsvValue(status3, statusSig, "status3", lineT, true);
+            printCsvValue(status4, statusSig, "status4", lineT, true);
+         
         } catch (Exception e) {
             DatConLog.Exception(e);
         }

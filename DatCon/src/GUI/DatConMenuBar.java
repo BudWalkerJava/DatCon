@@ -72,6 +72,9 @@ public class DatConMenuBar extends JMenuBar implements ActionListener {
     JRadioButtonMenuItem autoTranslateDJIAFiles = new JRadioButtonMenuItem(
             "Automatically extract .DAT(s) from DJI Assistant 2 files");
 
+    JRadioButtonMenuItem smartTimeAxis = new JRadioButtonMenuItem(
+            "Smart Time Axis processing");
+
     private DatCon datCon = null;
 
     public DatConMenuBar(DatCon datCon) {
@@ -113,6 +116,10 @@ public class DatConMenuBar extends JMenuBar implements ActionListener {
         preferencesMenu.add(showUnitsItem);
         showUnitsItem.setSelected(Persist.showUnits);
         showUnitsItem.addActionListener(this);
+
+        preferencesMenu.add(smartTimeAxis);
+        smartTimeAxis.setSelected(Persist.smartTimeAxis);
+        smartTimeAxis.addActionListener(this);
 
         //        preferencesMenu.add(experimentalItem);
         //        experimentalItem.setSelected(Persist.EXPERIMENTAL_FIELDS);
@@ -198,6 +205,9 @@ public class DatConMenuBar extends JMenuBar implements ActionListener {
                 Persist.save();
             } else if (source == showUnitsItem) {
                 Persist.showUnits = showUnitsItem.isSelected();
+                Persist.save();
+            } else if (source == smartTimeAxis) {
+                Persist.smartTimeAxis = smartTimeAxis.isSelected();
                 Persist.save();
             }
         } catch (Exception exception) {

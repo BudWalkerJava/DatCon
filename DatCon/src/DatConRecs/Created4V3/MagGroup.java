@@ -19,14 +19,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package src.DatConRecs.Created4V3;
 
 import src.DatConRecs.Payload;
+import src.DatConRecs.RecIMU;
 import src.DatConRecs.Record;
-import src.DatConRecs.Record_2048;
-import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
 import src.Files.ConvertDat.lineType;
 import src.Files.DatConLog;
 import src.Files.MagYaw;
 import src.Files.Persist;
+import src.Files.Signal;
+import src.Files.Units;
 
 public class MagGroup extends Record {
 
@@ -38,11 +39,19 @@ public class MagGroup extends Record {
 
     public boolean valid;
 
-    private int index;
+    protected Signal magSig = null;
+
+    protected Signal magYawSig = null;
+
+//    private int index;
 
     public MagGroup(ConvertDat convertDat, int id, int length, int index) {
         super(convertDat, id, length);
-        this.index = index;
+        //this.index = index;
+        magSig = Signal.SeriesFloat("Mag", index, "Magnetometer", null,
+                Units.aTesla);
+        magYawSig = Signal.SeriesDouble("Mag", index,
+                "Yaw computed from magnetometers", null, Units.degrees180);
     }
 
     public void process(Payload _payload) {
@@ -68,20 +77,14 @@ public class MagGroup extends Record {
                     magYaw = MagYaw.compute(magX, magY, magZ, magMod);
                 }
 
-                printCsvValue(magX, AxesAndSigs.magSig, "X(" + index + ")",
-                        lineT, valid);
-                printCsvValue(magY, AxesAndSigs.magSig, "Y(" + index + ")",
-                        lineT, valid);
-                printCsvValue(magZ, AxesAndSigs.magSig, "Z(" + index + ")",
-                        lineT, valid);
-                printCsvValue(magMod, AxesAndSigs.magSig, "Mod(" + index + ")",
-                        lineT, valid);
-                printCsvValue(magYaw, AxesAndSigs.magYawSig, "(" + index + ")",
-                        lineT, valid);
+                printCsvValue(magX, magSig, "X", lineT, valid);
+                printCsvValue(magY, magSig, "Y", lineT, valid);
+                printCsvValue(magZ, magSig, "Z", lineT, valid);
+                printCsvValue(magMod, magSig, "Mod", lineT, valid);
+                printCsvValue(magYaw, magYawSig, "magYaw", lineT, valid);
 
                 double diff = 0.0;
-                double yaw = Math
-                        .toDegrees(Record_2048.current.getYawRadians());
+                double yaw = Math.toDegrees(RecIMU.current.getYawRadians());
                 if (yaw > magYaw + 180) {
                     diff = magYaw - yaw + 360.0;
                 } else if (yaw < magYaw - 180) {
@@ -89,9 +92,7 @@ public class MagGroup extends Record {
                 } else {
                     diff = magYaw - yaw;
                 }
-
-                printCsvValue(diff, AxesAndSigs.magYawDiffSig,
-                        "(" + index + ")", lineT, valid);
+                printCsvValue(diff, magYawSig, "Yaw-magYaw", lineT, valid);
             } catch (Exception e) {
                 DatConLog.Exception(e);
             }

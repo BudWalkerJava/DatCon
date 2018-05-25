@@ -20,6 +20,7 @@ public class GoogleElevation extends SwingWorker<Void, Void> {
 
     private KMLPanel kmlPanel;
 
+    @SuppressWarnings("unused")
     private int timezoneOffset;
 
     public GoogleElevation(KMLPanel kmlPanel, double lat, double longitude) {

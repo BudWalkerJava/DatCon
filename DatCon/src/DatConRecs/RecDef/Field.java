@@ -20,6 +20,7 @@ public class Field {
 
     int initValue = 0;
 
+    @SuppressWarnings("unused")
     private String exprRHS = "";
 
     public Field(FieldType fType, String name) {

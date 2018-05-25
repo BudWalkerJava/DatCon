@@ -1,21 +1,3 @@
-/* Record152_0 class
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that redistribution of source code include
-the following disclaimer in the documentation and/or other materials provided
-with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY ITS CREATOR "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE CREATOR OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package src.DatConRecs.Created4V3;
 
 import src.DatConRecs.Payload;
@@ -42,10 +24,11 @@ public class MagRawGroup extends Record {
     public MagRawGroup(ConvertDat convertDat, int id, int length, int index) {
         super(convertDat, id, length);
         this.index = index;
+        magRawSig = Signal.SeriesFloat("Mag" + "(" + index + ")",
+                "Magnetometer", null, Units.aTesla);
     }
 
-    public static Signal magRawSig = Signal.SeriesFloat("MagRaw",
-            "Magnetometer", null, Units.aTesla);
+    protected Signal magRawSig = null;
 
     public void process(Payload _payload) {
         super.process(_payload);
@@ -65,14 +48,10 @@ public class MagRawGroup extends Record {
             try {
                 float magMod = (int) Math
                         .sqrt(magX * magX + magY * magY + magZ * magZ);
-                printCsvValue(magX, magRawSig, "X(" + index + ")", lineT,
-                        valid);
-                printCsvValue(magY, magRawSig, "Y(" + index + ")", lineT,
-                        valid);
-                printCsvValue(magZ, magRawSig, "Z(" + index + ")", lineT,
-                        valid);
-                printCsvValue(magMod, magRawSig, "Mod(" + index + ")", lineT,
-                        valid);
+                printCsvValue(magX, magRawSig, "rawX", lineT, valid);
+                printCsvValue(magY, magRawSig, "rawY", lineT, valid);
+                printCsvValue(magZ, magRawSig, "rawZ", lineT, valid);
+                printCsvValue(magMod, magRawSig, "rawMod", lineT, valid);
                 //            printCsvValue(magYaw, AxesAndSigs.magYawSig, "(" + index + ")",
                 //                    lineT, valid);
             } catch (Exception e) {

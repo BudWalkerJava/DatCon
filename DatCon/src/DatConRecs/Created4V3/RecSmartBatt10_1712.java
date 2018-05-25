@@ -71,9 +71,6 @@ public class RecSmartBatt10_1712 extends Record {
             printCsvValue(goHomeTime, AxesAndSigs.battGoHomeTime, "", lineT,
                     valid);
             printCsvValue(landTime, AxesAndSigs.battLandTime, "", lineT, valid);
-            //            printCsvValue(Record176_136.current.batteryPercent,
-            //                    AxesAndSigs.battPercent, "", lineT,
-            //                    Record176_136.current.valid);
         } catch (Exception e) {
             DatConLog.Exception(e);
         }

@@ -19,19 +19,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package src.DatConRecs.Created4V3;
 
 import src.DatConRecs.Payload;
+import src.DatConRecs.RecBatt;
 import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
 import src.Files.ConvertDat.lineType;
 import src.Files.DatConLog;
 
-public class RecBatt38_5002 extends RecBatt {
+public class RecBatt38_5002 extends RecBatt38_500X {
+
+    public static RecBatt38_5002 current = null;
 
     public RecBatt38_5002(ConvertDat convertDat) {
-        super(convertDat, 5002, 38);
-
+        super(convertDat, 5002, 2);
     }
-
-    public short batteryPercent = 0;
+    //
+    //    public short batteryPercent = 0;
 
     public void process(Payload _payload) {
         super.process(_payload);
@@ -59,23 +61,23 @@ public class RecBatt38_5002 extends RecBatt {
         }
     }
 
-    @Override
-    public void printCols(lineType lineT) {
-        try {
-            for (int i = 1; i <= 6; i++) {
-                printCsvValue(volt[i - 1], AxesAndSigs.cellVoltSig,
-                        ("" + i + "(2)"), lineT, valid);
-            }
-            printCsvValue(crrnt, AxesAndSigs.currentSig, "(2)", lineT, valid);
-            printCsvValue(totalVolts, AxesAndSigs.voltsSig, "total(2)", lineT,
-                    valid);
-            printCsvValue(temp, AxesAndSigs.batteryTempSig, "(2)", lineT,
-                    valid);
-            printCsvValue(batteryPercent, AxesAndSigs.battPercent, "(2)", lineT,
-                    valid);
-        } catch (Exception e) {
-            DatConLog.Exception(e);
-        }
-    }
+    //    @Override
+    //    public void printCols(lineType lineT) {
+    //        try {
+    //            for (int i = 1; i <= 6; i++) {
+    //                printCsvValue(volt[i - 1], AxesAndSigs.cellVoltSig,
+    //                        ("" + i + "(2)"), lineT, valid);
+    //            }
+    //            printCsvValue(crrnt, AxesAndSigs.currentSig, "(2)", lineT, valid);
+    //            printCsvValue(totalVolts, AxesAndSigs.voltsSig, "total(2)", lineT,
+    //                    valid);
+    //            printCsvValue(temp, AxesAndSigs.batteryTempSig, "(2)", lineT,
+    //                    valid);
+    //            printCsvValue(batteryPercent, AxesAndSigs.battPercent, "(2)", lineT,
+    //                    valid);
+    //        } catch (Exception e) {
+    //            DatConLog.Exception(e);
+    //        }
+    //    }
 
 }

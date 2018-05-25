@@ -1,25 +1,7 @@
-/* ConvertDat class
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that redistribution of source code include
-the following disclaimer in the documentation and/or other materials provided
-with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY ITS CREATOR "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE CREATOR OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package src.V1.Files;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import src.DatConRecs.Dictionary;
 import src.DatConRecs.Payload;
@@ -94,7 +76,6 @@ public class ConvertDatV1 extends ConvertDat {
                                 && tickNo >= lastTickNoPrinted + sampleSize) {
                             csvWriter.print(tickNo + ","
                                     + _datFile.timeString(tickNo, timeOffset));
-                            //                            printCsvLine(csvWriter, lineType.LINE);
                             printCsvLine(lineType.LINE);
                             lastTickNoPrinted = tickNo;
                         }
@@ -104,6 +85,9 @@ public class ConvertDatV1 extends ConvertDat {
         } catch (FileEnd ex) {
         } catch (Corrupted ex) {
         } catch (Exception e) {
+            if (Persist.EXPERIMENTAL_DEV) {
+                e.printStackTrace();
+            }
         } finally {
             _datFile.close();
             DatConLog.Log("CRC Error Ratio "
@@ -115,33 +99,63 @@ public class ConvertDatV1 extends ConvertDat {
     }
 
     @Override
-    protected Record getRecordInst(RecSpec recInDat) {
-        Record retv = null;
-        retv = Dictionary.getRecordInst(
-                src.DatConRecs.String.Dictionary.entries, recInDat, this, true);
-        if (retv != null) {
+    protected Vector<Record> getRecordInst(RecSpec recInDat) {
+        Vector<Record> retv = new Vector<Record>();
+        Record rec = null;
+        rec = Dictionary.getRecordInst(src.DatConRecs.String.Dictionary.entries,
+                recInDat, this, true);
+        if (rec != null) {
+            retv.add(rec);
             return retv;
         }
         switch (Persist.parsingMode) {
         case DAT_THEN_ENGINEERED:
-            retv = getRecordInstFromDat(recInDat);
-            if (retv != null) {
-                return retv;
+            rec = getRecordInstFromDat(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            } else {
+                rec = getRecordInstEngineered(recInDat);
+                if (rec != null) {
+                    retv.add(rec);
+                }
             }
-            return getRecordInstEngineered(recInDat);
         case ENGINEERED_THEN_DAT:
-            retv = getRecordInstEngineered(recInDat);
-            if (retv != null) {
-                return retv;
+            rec = getRecordInstEngineered(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            } else {
+                rec = getRecordInstFromDat(recInDat);
+                if (rec != null) {
+                    retv.add(rec);
+                }
             }
-            return getRecordInstFromDat(recInDat);
+            break;
         case JUST_DAT:
-            return getRecordInstFromDat(recInDat);
+            rec = getRecordInstFromDat(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            }
+            break;
         case JUST_ENGINEERED:
-            return getRecordInstEngineered(recInDat);
+            rec = getRecordInstEngineered(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            }
+            break;
+        case ENGINEERED_AND_DAT:
+            rec = getRecordInstEngineered(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            }
+            rec = getRecordInstFromDat(recInDat);
+            if (rec != null) {
+                retv.add(rec);
+            }
+            break;
         default:
-            return null;
+            return retv;
         }
+        return retv;
     }
 
     private Record getRecordInstEngineered(RecSpec recInDat) {

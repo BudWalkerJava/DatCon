@@ -25,6 +25,9 @@ public class ParsingMode extends JMenu implements ActionListener {
     JRadioButtonMenuItem engineeredThenDat = new JRadioButtonMenuItem(
             "Engineered then DatDefined");
 
+    JRadioButtonMenuItem engineeredAndDat = new JRadioButtonMenuItem(
+            "Engineered and DatDefined");
+
     JRadioButtonMenuItem invalidStructOK = new JRadioButtonMenuItem(
             "Invalid DatHeader OK");
 
@@ -35,11 +38,13 @@ public class ParsingMode extends JMenu implements ActionListener {
         group.add(justEngineered);
         group.add(datThenEngineered);
         group.add(engineeredThenDat);
+        group.add(engineeredAndDat);
 
         add(justEngineered);
         add(justDat);
         add(engineeredThenDat);
         add(datThenEngineered);
+        add(engineeredAndDat);
         add(new JSeparator());
         add(invalidStructOK);
 
@@ -47,6 +52,7 @@ public class ParsingMode extends JMenu implements ActionListener {
         justEngineered.addActionListener(this);
         datThenEngineered.addActionListener(this);
         engineeredThenDat.addActionListener(this);
+        engineeredAndDat.addActionListener(this);
         invalidStructOK.addActionListener(this);
 
         invalidStructOK.setSelected(Persist.invalidStructOK);
@@ -57,6 +63,9 @@ public class ParsingMode extends JMenu implements ActionListener {
             break;
         case ENGINEERED_THEN_DAT:
             engineeredThenDat.setSelected(true);
+            break;
+        case ENGINEERED_AND_DAT:
+            engineeredAndDat.setSelected(true);
             break;
         case JUST_DAT:
             justDat.setSelected(true);
@@ -82,6 +91,8 @@ public class ParsingMode extends JMenu implements ActionListener {
                 Persist.parsingMode = Persist.ParsingMode.DAT_THEN_ENGINEERED;
             } else if (source == engineeredThenDat) {
                 Persist.parsingMode = Persist.ParsingMode.ENGINEERED_THEN_DAT;
+            } else if (source == engineeredAndDat) {
+                Persist.parsingMode = Persist.ParsingMode.ENGINEERED_AND_DAT;
             } else if (source == invalidStructOK) {
                 Persist.invalidStructOK = invalidStructOK.isSelected();
             }

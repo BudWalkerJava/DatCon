@@ -97,100 +97,102 @@ public class AxesAndSigs {
     public static Signal battLandTime = Signal.SeriesInt("SMART_BATT:landTime",
             "Smart Battery computed land time", null, Units.seconds);
 
-    public static Signal battPercent = Signal.SeriesInt("Battery:battery%",
-            "Battery Percentage", null, Units.percentage);
+//    public static Signal battPercent = Signal.SeriesInt("Battery:battery%",
+//            "Battery Percentage", null, Units.percentage);
+//
+//    //    public static Signal rcSigLevel = Signal.SeriesInt("rcSigLevel",
+//    //            "Signal Level of RC", null, Units.percentage);
+//
+//    public final static Signal currentSig = Signal
+//            .SeriesFloat("Battery:current", "Current", null, Units.amps);
+//
+//    public final static Signal cellVoltSig = Signal.SeriesFloat(
+//            "Battery:cellVolts", "Cell Volts", AxesAndSigs.cellVoltsAxis,
+//            Units.volts);
+//
+//    public final static Signal batteryTempSig = Signal
+//            .SeriesFloat("Battery:Temp", "Battery Temp", null, Units.degreesC);
+//
+//    public final static Signal batteryFCC = Signal.SeriesFloat("Battery:FullCC",
+//            "Battery Full Charge Capacity", null, Units.mAh);;
+//
+//    public final static Signal batteryRemCap = Signal.SeriesFloat(
+//            "Battery:RemCap", "Battery Remaining Cap", null, Units.mAh);;
+//
+//    public final static Signal voltsSig = Signal.SeriesFloat("Battery:volts",
+//            "Volts", null, Units.volts);
+//
+//    public final static Signal wattsSig = Signal.SeriesFloat("Battery:watts",
+//            "Watts", null, Units.watts);
 
-    //    public static Signal rcSigLevel = Signal.SeriesInt("rcSigLevel",
-    //            "Signal Level of RC", null, Units.percentage);
-
-    public final static Signal currentSig = Signal
-            .SeriesFloat("Battery:current", "Current", null, Units.amps);
-
-    public final static Signal cellVoltSig = Signal.SeriesFloat(
-            "Battery:cellVolts", "Cell Volts", AxesAndSigs.cellVoltsAxis,
-            Units.volts);
-
-    public final static Signal batteryTempSig = Signal
-            .SeriesFloat("Battery:Temp", "Battery Temp", null, Units.degreesC);
-
-    public final static Signal batteryFCC = Signal.SeriesFloat("Battery:FullCC",
-            "Battery Full Charge Capacity", null, Units.mAh);;
-
-    public final static Signal batteryRemCap = Signal.SeriesFloat(
-            "Battery:RemCap", "Battery Remaining Cap", null, Units.mAh);;
-
-    public final static Signal voltsSig = Signal.SeriesFloat("Battery:volts",
-            "Volts", null, Units.volts);
-
-    public final static Signal wattsSig = Signal.SeriesFloat("Battery:watts",
-            "Watts", null, Units.watts);
-
-    public final static Signal longitudeSig = Signal.SeriesDouble("Longitude",
-            "Longitude", null, Units.degrees180);
-
-    public final static Signal latitudeSig = Signal.SeriesDouble("Latitude",
-            "Latitude", null, Units.degrees180);
-
-    public final static Signal absoluteHeightSig = Signal.SeriesDouble(
-            "absoluteHeight", "Height above Launch HomePoint", null,
-            Units.meters);
-
-    public final static Signal numSatsSig = Signal.SeriesFloat("numSats",
-            "Number of Satellites", null, Units.noUnits);
-
-    public final static Signal barometerSig = Signal.SeriesFloat("Barometer",
-            "Barometer", null, Units.meters);
-
-    public final static Signal accelSig = Signal.SeriesFloat("Accel",
-            "Accelerometer", AxesAndSigs.accelAxis, Units.G);
-
-    public final static Signal gyroSig = Signal.SeriesFloat("Gyro", "Gyroscope",
-            AxesAndSigs.gyroAxis, Units.degreesPerSec);
-
+    //
+    //    public final static Signal longitudeSig = Signal
+    //            .SeriesDouble("IMU:Longitude", "Longitude", null, Units.degrees180);
+    //
+    //    public final static Signal latitudeSig = Signal.SeriesDouble("Latitude",
+    //            "Latitude", null, Units.degrees180);
+    //
+    //    public final static Signal absoluteHeightSig = Signal.SeriesDouble(
+    //            "absoluteHeight", "Height above Launch HomePoint", null,
+    //            Units.meters);
+    //
+    //    public final static Signal numSatsSig = Signal.SeriesFloat("numSats",
+    //            "Number of Satellites", null, Units.noUnits);
+    //
+    //    public final static Signal barometerSig = Signal.SeriesFloat("Barometer",
+    //            "Barometer", null, Units.meters);
+    //
+    //    public final static Signal accelSig = Signal.SeriesFloat("Accel",
+    //            "Accelerometer", AxesAndSigs.accelAxis, Units.G);
+    //
+    //    public final static Signal gyroSig = Signal.SeriesFloat("Gyro", "Gyroscope",
+    //            AxesAndSigs.gyroAxis, Units.degreesPerSec);
+    //
     public final static Signal magSig = Signal.SeriesFloat("Mag",
             "Magnetometer", null, Units.aTesla);
 
-    public final static Signal velocitySig = Signal.SeriesFloat("Vel",
-            "Velocity", null, Units.metersPerSec);
-
-    public final static Signal rollSig = Signal.SeriesDouble("Roll", "Roll",
-            null, Units.degrees180);
-
-    public final static Signal pitchSig = Signal.SeriesDouble("Pitch", "Pitch",
-            null, Units.degrees180);
-
-    public final static Signal yawSig = Signal.SeriesDouble("Yaw", "Yaw", null,
-            Units.degrees180);
-
-    public final static Signal yaw360Sig = Signal.SeriesDouble("Yaw(360)",
-            "Yaw 360 degrees scale", null, Units.degrees360);
-
-    public final static Signal totalGyroSig = Signal.SeriesDouble("totalGyro",
-            "Integrate and sum gyro values", null, Units.degrees);
-
+    //
+    //    public final static Signal velocitySig = Signal.SeriesFloat("Vel",
+    //            "Velocity", null, Units.metersPerSec);
+    //
+    //    public final static Signal rollSig = Signal.SeriesDouble("Roll", "Roll",
+    //            null, Units.degrees180);
+    //
+    //    public final static Signal pitchSig = Signal.SeriesDouble("Pitch", "Pitch",
+    //            null, Units.degrees180);
+    //
+    //    public final static Signal yawSig = Signal.SeriesDouble("Yaw", "Yaw", null,
+    //            Units.degrees180);
+    //
+    //    public final static Signal yaw360Sig = Signal.SeriesDouble("Yaw(360)",
+    //            "Yaw 360 degrees scale", null, Units.degrees360);
+    //
+    //    public final static Signal totalGyroSig = Signal.SeriesDouble("totalGyro",
+    //            "Integrate and sum gyro values", null, Units.degrees);
+    //
     public final static Signal magYawSig = Signal.SeriesDouble("magYaw:magYaw",
             "Yaw computed from magnetometers", null, Units.degrees180);
-
+    //
     public final static Signal magYawDiffSig = Signal.SeriesDouble(
             "magYaw:Yaw-magYaw", "Yaw magYaw diff", null, Units.degrees180);
-
-    public final static Signal magYawSigInterval = Signal.SeriesDouble(
-            "magYawErrorBound", "Error Bound", null, Units.degrees180);
-
-    public final static Signal directionOfTravelSig = Signal.SeriesDouble(
-            "directionOfTravel", "Direction of Travel", null, Units.degrees180);
-
-    public final static Signal distanceTravelledSig = Signal.SeriesDouble(
-            "distanceTravelled", "Distance Travelled", null, Units.meters);
-
-    public final static Signal distanceHPSig = Signal.SeriesDouble("distanceHP",
-            "Distance From HP", null, Units.meters);
-
-    public final static Signal imuTempSig = Signal.SeriesDouble("ImuTemp",
-            "IMU Temp", null, Units.degreesC);
-
-    public final static Signal quaternionSig = Signal.SeriesDoubleExperimental(
-            "quat", "Quaternion", null, Units.noUnits);
+    //
+    //    public final static Signal magYawSigInterval = Signal.SeriesDouble(
+    //            "magYawErrorBound", "Error Bound", null, Units.degrees180);
+    //
+    //    public final static Signal directionOfTravelSig = Signal.SeriesDouble(
+    //            "directionOfTravel", "Direction of Travel", null, Units.degrees180);
+    //
+    //    public final static Signal distanceTravelledSig = Signal.SeriesDouble(
+    //            "distanceTravelled", "Distance Travelled", null, Units.meters);
+    //
+    //    public final static Signal distanceHPSig = Signal.SeriesDouble("distanceHP",
+    //            "Distance From HP", null, Units.meters);
+    //
+    //    public final static Signal imuTempSig = Signal.SeriesDouble("ImuTemp",
+    //            "IMU Temp", null, Units.degreesC);
+    //
+    //    public final static Signal quaternionSig = Signal.SeriesDoubleExperimental(
+    //            "quat", "Quaternion", null, Units.noUnits);
 
     public static Signal throttleSig = Signal.SeriesInt("RC:Throttle",
             "Throttle", controlAxis, Units.controlStick);

@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Vector;
 
+import src.DatConRecs.Created4V1.RecBatt45_17;
 import src.Files.ConvertDat;
 import src.Files.DatConLog;
 import src.Files.Persist;
@@ -14,10 +15,9 @@ public class Dictionary {
 
     public static Vector<RecClassSpec> entries = new Vector<RecClassSpec>();
     static {
-        entries.add(new RecClassSpec(Record_2048.class, 2048, 120));
+        //        entries.add(new RecClassSpec(RecIMU.class, 2048, 120));
         entries.add(new RecClassSpec(GoTxt50_12.class, 12, 50, 52, 53, 55));
         entries.add(new RecClassSpec(RecBatt45_17.class, 17, 45));
-        entries.add(new RecClassSpec(Record_1.class, 1, 120));
         entries.add(new RecClassSpec(svn_info_65534.class, 65534, -1));
     }
 

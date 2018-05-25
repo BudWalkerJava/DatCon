@@ -2,19 +2,17 @@ package src.DatConRecs;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
 import src.Files.ConvertDat;
+import src.Files.ConvertDat.lineType;
 import src.Files.DatConLog;
 import src.Files.Signal;
 import src.Files.Units;
-import src.Files.ConvertDat.lineType;
 
 public class GpsGroup extends Record {
-    private String suffix = "";
+    //    private String suffix = "";
 
     protected boolean valid = false;
 
@@ -22,13 +20,32 @@ public class GpsGroup extends Record {
 
     static Calendar dateTime = null;
 
-    public GpsGroup(ConvertDat convertDat, String suffix, int id, int length) {
+    public GpsGroup(ConvertDat convertDat, int index, int id, int length) {
         super(convertDat, id, length);
-        this.suffix = suffix;
+
         dateTime = new Calendar.Builder()
                 .setTimeZone(TimeZone.getTimeZone("UTC")).build();
         df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         df.setCalendar(dateTime);
+
+        gpsCoordSig = Signal.SeriesDouble("GPS", index, "", null,
+                Units.gpsCoord);
+
+        gpsDateTimeSig = Signal.SeriesInt("GPS", index, "", null,
+                Units.noUnits);
+
+        gpsHeightMSLSig = Signal.SeriesFloat("GPS", index, "heightMSL", null,
+                Units.meters);
+
+        gpsDopSig = Signal.SeriesFloat("GPS", index, "DOP", null,
+                Units.noUnits);
+
+        gpsAccSig = Signal.SeriesFloat("GPS", index, "Acc", null,
+                Units.noUnits);
+        gpsNumSVSig = Signal.SeriesInt("GPS", index, "Visible", null,
+                Units.noUnits);
+        velocitySig = Signal.SeriesInt("GPS", index, "", null,
+                Units.metersPerSec);
     }
 
     protected long date = 0;
@@ -59,23 +76,25 @@ public class GpsGroup extends Record {
 
     protected int numSV = 0;
 
-    protected static Signal gpsCoordSig = Signal.SeriesDouble("GPS", "", null,
-            Units.gpsCoord);
+    private float velN = 0.0f;;
 
-    protected static Signal gpsDateTimeSig = Signal.SeriesInt("GPS", "", null,
-            Units.noUnits);
+    private float velE = 0.0f;;
 
-    protected static Signal gpsHeightMSLSig = Signal
-            .SeriesFloat("GPS:heightMSL", "", null, Units.meters);
+    private float velD = 0.0f;;
 
-    protected static Signal gpsDopSig = Signal.SeriesFloat("GPS:DOP", "", null,
-            Units.noUnits);
+    protected Signal gpsCoordSig = null;
 
-    protected static Signal gpsAccSig = Signal.SeriesFloat("GPS:Acc", "", null,
-            Units.noUnits);
+    protected Signal gpsDateTimeSig = null;
 
-    protected static Signal gpsNumSVSig = Signal.SeriesInt("GPS:Visible", "",
-            null, Units.noUnits);
+    protected Signal gpsHeightMSLSig = null;
+
+    protected Signal gpsDopSig = null;
+
+    protected Signal gpsAccSig = null;
+
+    protected Signal gpsNumSVSig = null;
+
+    private Signal velocitySig = null;
 
     public void process(Payload _payload) {
         super.process(_payload);
@@ -86,6 +105,9 @@ public class GpsGroup extends Record {
             LongP = ((double) _payload.getInt(8)) / 1.0E7;
             LatP = ((double) _payload.getInt(12)) / 1.0E7;
             heightMSL = ((float) _payload.getInt(16)) / 1000.0f;
+            velN = _payload.getFloat(20) / 100.0f;
+            velE = _payload.getFloat(24) / 100.0f;
+            velD = _payload.getFloat(28) / 100.0f;
             hdop = _payload.getFloat(32);
             pdop = _payload.getFloat(36);
             hacc = _payload.getFloat(40);
@@ -108,20 +130,24 @@ public class GpsGroup extends Record {
 
     public void printCols(lineType lineT) {
         try {
-            printCsvValue(LongP, gpsCoordSig, "Long" + suffix, lineT, valid);
-            printCsvValue(LatP, gpsCoordSig, "Lat" + suffix, lineT, valid);
-            printCsvValue(date, gpsDateTimeSig, "Date" + suffix, lineT, valid);
-            printCsvValue(time, gpsDateTimeSig, "Time" + suffix, lineT, valid);
+            printCsvValue(LongP, gpsCoordSig, "Long", lineT, valid);
+            printCsvValue(LatP, gpsCoordSig, "Lat", lineT, valid);
+            printCsvValue(date, gpsDateTimeSig, "Date", lineT, valid);
+            printCsvValue(time, gpsDateTimeSig, "Time", lineT, valid);
             printCsvValue(dtS, "GPS:dateTimeStamp", lineT, dopValid);
-            printCsvValue(heightMSL, gpsHeightMSLSig, "" + suffix, lineT,
+            printCsvValue(heightMSL, gpsHeightMSLSig, "heightMSL", lineT,
                     dopValid);
-            printCsvValue(hdop, gpsDopSig, "H" + suffix, lineT, dopValid);
-            printCsvValue(pdop, gpsDopSig, "P" + suffix, lineT, dopValid);
-            //printCsvValue(hacc, gpsAccSig, "H" + suffix, lineT, valid);
-            printCsvValue(sacc, gpsAccSig, "S" + suffix, lineT, dopValid);
-            //printCsvValue(numSV, gpsNumSVSig, "" + suffix, lineT, valid);
-            printCsvValue(numGPS, gpsNumSVSig, "GPS" + suffix, lineT, valid);
-            printCsvValue(numGLN, gpsNumSVSig, "GLNAS" + suffix, lineT, valid);
+            printCsvValue(hdop, gpsDopSig, "hDOP", lineT, dopValid);
+            printCsvValue(pdop, gpsDopSig, "pDOP", lineT, dopValid);
+            //printCsvValue(hacc, gpsAccSig, "H" , lineT, valid);
+            printCsvValue(sacc, gpsAccSig, "sAcc", lineT, dopValid);
+            //printCsvValue(numSV, gpsNumSVSig, "" , lineT, valid);
+            printCsvValue(numGPS, gpsNumSVSig, "numGPS", lineT, valid);
+            printCsvValue(numGLN, gpsNumSVSig, "numGLNAS", lineT, valid);
+            printCsvValue(numSV, gpsNumSVSig, "numSV", lineT, valid);
+            printCsvValue(velN, velocitySig, "velN", lineT, valid);
+            printCsvValue(velE, velocitySig, "velE", lineT, valid);
+            printCsvValue(velD, velocitySig, "velD", lineT, valid);
         } catch (Exception e) {
             DatConLog.Exception(e);
         }

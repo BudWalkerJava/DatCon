@@ -53,7 +53,7 @@ public class DatFile {
 
     protected MappedByteBuffer memory = null;
 
-    protected String acTypeName = "";
+    private String acTypeName = "";
 
     protected long filePos = 0;
 
@@ -66,8 +66,6 @@ public class DatFile {
     protected long fileLength = 0;
 
     public static String firmwareDate = "";
-
-    //protected FileEnd _fileEnd = new FileEnd();
 
     protected int numCorrupted = 0;
 
@@ -92,10 +90,6 @@ public class DatFile {
     protected int numBattCells = 0;
 
     public DatHeader.AcType acType = DatHeader.AcType.UNKNOWN;
-
-    public enum DatVersion {
-        V1, V3, DJIASSISTANT, UNKNOWN
-    }
 
     protected long lastRecordTickNo = 0;
 
@@ -142,12 +136,16 @@ public class DatFile {
         FileInputStream bfr = new FileInputStream(new File(datFileName));
         bfr.read(arra, 0, 256);
         bfr.close();
-        if (!(new String(arra, 16, 5).equals("BUILD"))) {
+        String headerString = new String(arra, 0, 21);
+        if (!(headerString.substring(16, 21).equals("BUILD"))) {
             if (Persist.invalidStructOK) {
                 DatConLog.Log("createDatFile invalid header - proceeding");
                 datFile = new DatFileV3(datFileName);
                 datFile.setStartOfRecords(256);
                 return datFile;
+            }
+            if (headerString.substring(0, 4).equals("LOGH")) {
+                throw new NotDatFile("Probably an encrypted .DAT");
             }
             throw new NotDatFile();
         }
@@ -170,9 +168,6 @@ public class DatFile {
             if ((new String(arra, 16, 5).equals("BUILD"))) {
                 return true;
             }
-            //            if (Persist.EXPERIMENTAL_DEV) {
-            //                return true;
-            //            }
         } catch (Exception e) {
         }
         return false;
@@ -240,7 +235,7 @@ public class DatFile {
         }
         memory.order(ByteOrder.LITTLE_ENDIAN);
         acType = datHeader.getAcType();
-        acTypeName = DatHeader.toString(acType);
+        //acTypeName = DatHeader.toString(acType);
     }
 
     public DatFile() {
@@ -423,7 +418,59 @@ public class DatFile {
     }
 
     public void preAnalyze() throws NotDatFile {
-        throw new RuntimeException("DatFile: mpreAnalyze() called");
+        switch (acType) {
+        case I1:
+            numBattCells = 6;
+            break;
+        case I2:
+            numBattCells = 6;
+            break;
+        case M100:
+            numBattCells = 6;
+            break;
+        case M600:
+            numBattCells = 6;
+            break;
+        case M200:
+            numBattCells = 6;
+            break;
+        case MavicPro:
+            numBattCells = 3;
+            break;
+        case MavicAir:
+            numBattCells = 3;
+            break;
+        case P3AP:
+            numBattCells = 4;
+            break;
+        case P3S:
+            numBattCells = 4;
+            break;
+        case P4:
+            numBattCells = 4;
+            break;
+        case P4A:
+            numBattCells = 4;
+            break;
+        case P4P:
+            numBattCells = 4;
+            break;
+        case SPARK:
+            numBattCells = 3;
+            break;
+        case UNKNOWN:
+            numBattCells = 4;
+            DatConLog.Log("Assuming 4 cellls per battery");
+            break;
+        default:
+            numBattCells = 4;
+            DatConLog.Log("Assuming 4 cellls per battery");
+            break;
+        }
+    }
+
+    public int getNumBattCells() {
+        return numBattCells;
     }
 
     public String getFirmwareDate() {
@@ -458,21 +505,6 @@ public class DatFile {
             RecSpec tst = iter.next();
             DatConLog.Log(tst.getDescription() + " Type " + tst.getId());
         }
-    }
-
-    public boolean typeTypeExists(int t) {
-        Iterator<RecSpec> iter = recsInDat.values().iterator();
-        while (iter.hasNext()) {
-            RecSpec tst = iter.next();
-            if (tst.getId() == t) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int getNumBattCells() {
-        return numBattCells;
     }
 
     public boolean isTablet() {

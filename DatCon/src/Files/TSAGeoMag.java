@@ -513,7 +513,8 @@ public class TSAGeoMag {
             snorm[n] = snorm[n - 1] * (2 * n - 1) / n;
             int j = 2;
 
-            for (int m = 0, D1 = 1, D2 = (n - m + D1) / D1; D2 > 0; D2--, m += D1) {
+            for (int m = 0, D1 = 1, D2 = (n - m + D1)
+                    / D1; D2 > 0; D2--, m += D1) {
                 k[m][n] = (double) (((n - 1) * (n - 1)) - (m * m))
                         / (double) ((2 * n - 1) * (2 * n - 3));
                 if (m > 0) {
@@ -683,20 +684,21 @@ public class TSAGeoMag {
 
         for (int n = 1; n <= maxord; n++) {
             ar = ar * aor;
-            for (int m = 0, D3 = 1, D4 = (n + m + D3) / D3; D4 > 0; D4--, m += D3) {
+            for (int m = 0, D3 = 1, D4 = (n + m + D3)
+                    / D3; D4 > 0; D4--, m += D3) {
 
                 //COMPUTE UNNORMALIZED ASSOCIATED LEGENDRE POLYNOMIALS
                 //AND DERIVATIVES VIA RECURSION RELATIONS
                 if (alt != oalt || glat != olat) {
                     if (n == m) {
                         snorm[n + m * 13] = st * snorm[n - 1 + (m - 1) * 13];
-                        dp[m][n] = st * dp[m - 1][n - 1] + ct
-                                * snorm[n - 1 + (m - 1) * 13];
+                        dp[m][n] = st * dp[m - 1][n - 1]
+                                + ct * snorm[n - 1 + (m - 1) * 13];
                     }
                     if (n == 1 && m == 0) {
                         snorm[n + m * 13] = ct * snorm[n - 1 + m * 13];
-                        dp[m][n] = ct * dp[m][n - 1] - st
-                                * snorm[n - 1 + m * 13];
+                        dp[m][n] = ct * dp[m][n - 1]
+                                - st * snorm[n - 1 + m * 13];
                     }
                     if (n > 1 && n != m) {
                         if (m > n - 2)
@@ -705,9 +707,9 @@ public class TSAGeoMag {
                             dp[m][n - 2] = 0.0;
                         snorm[n + m * 13] = ct * snorm[n - 1 + m * 13]
                                 - k[m][n] * snorm[n - 2 + m * 13];
-                        dp[m][n] = ct * dp[m][n - 1] - st
-                                * snorm[n - 1 + m * 13] - k[m][n]
-                                * dp[m][n - 2];
+                        dp[m][n] = ct * dp[m][n - 1]
+                                - st * snorm[n - 1 + m * 13]
+                                - k[m][n] * dp[m][n - 2];
                     }
                 }
 
@@ -908,8 +910,8 @@ public class TSAGeoMag {
      * 
      * @return  The horizontal magnetic field strength in nano Tesla.
      */
-    public double getHorizontalIntensity(double dlat, double dlong,
-            double year, double altitude) {
+    public double getHorizontalIntensity(double dlat, double dlong, double year,
+            double altitude) {
         calcGeoMag(dlat, dlong, year, altitude);
         return bh;
     }
@@ -1121,8 +1123,9 @@ public class TSAGeoMag {
 
     public static void main(String[] args) {
         TSAGeoMag tsagm = new TSAGeoMag();
-        double xx = tsagm.getDeclination(35.0, -120.0);
-        System.out.println("xx "+xx);
+        double xx = tsagm.getDeclination(5086, -1.95);
+        //double xx = tsagm.getDipAngle(47.0, -120.0);
+        System.out.println("xx " + xx);
     }
 
 }

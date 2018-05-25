@@ -1,21 +1,3 @@
-/* RecordType class
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that redistribution of source code include
-the following disclaimer in the documentation and/or other materials provided
-with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY ITS CREATOR "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE CREATOR OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 package src.DatConRecs;
 
 import java.io.IOException;
@@ -75,10 +57,6 @@ public abstract class Record extends RecSpec {
         this._datFile = datFile;
     }
 
-    public Record(ConvertDat convertDat2) {
-        // TODO Auto-generated constructor stub
-    }
-
     public Record(String name, int id, RecType recType) {
         super(name, id, recType);
     }
@@ -87,29 +65,11 @@ public abstract class Record extends RecSpec {
         payloadBB = _record.getBB();
     }
 
-    protected float minVolts(float[] volts) {
-        float min = Float.MAX_VALUE;
-        for (int i = 0; i < volts.length; i++) {
-            if (volts[i] < min)
-                min = volts[i];
-        }
-        return min;
-    }
-
-    protected float maxVolts(float[] volts) {
-        float max = Float.MIN_VALUE;
-        for (int i = 0; i < volts.length; i++) {
-            if (volts[i] > max)
-                max = volts[i];
-        }
-        return max;
-    }
-
     public void printCols(lineType lineT) {
         throw new RuntimeException("printCols called in Record");
     }
 
-    protected void printCsvValue(Number value, Signal signal, String suffix,
+    public void printCsvValue(Number value, Signal signal, String suffix,
             lineType lineT, boolean valid) throws IOException {
         if (lineT == lineType.XML) {
             printXmlSig(signal.getName(), suffix, signal);
@@ -171,34 +131,6 @@ public abstract class Record extends RecSpec {
         totalNumRecExceptions++;
     }
 
-    // Following won't create entries in XML file
-    //    protected void printCsvValue(boolean value, String header, lineType lineT,
-    //            boolean valid) throws IOException {
-    //        if (lineT == lineType.HEADER) {
-    //            csvWriter.print("," + header);
-    //        } else {
-    //            csvWriter.print(",");
-    //            if (valid) {
-    //                if (value) {
-    //                    csvWriter.print("1");
-    //                } else {
-    //                    csvWriter.print("0");
-    //                }
-    //            }
-    //        }
-    //    }
-    //
-    //    protected void printCsvValue(int value, String header, lineType lineT,
-    //            boolean valid) throws IOException {
-    //        if (lineT == lineType.HEADER) {
-    //            csvWriter.print("," + header);
-    //        } else {
-    //            csvWriter.print(",");
-    //            if (valid)
-    //                csvWriter.print("" + value);
-    //        }
-    //    }
-    //
     protected void printCsvValue(float value, String header, lineType lineT,
             boolean valid) throws IOException {
         if (lineT == lineType.XML)

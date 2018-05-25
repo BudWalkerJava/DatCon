@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -34,11 +35,12 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -49,6 +51,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -76,7 +79,7 @@ import src.GUI.TimeAxisPanel;
 public class DatCon extends JPanel
         implements ActionListener, ComponentListener, MouseListener {
 
-    static public final String version = "3.3.0";
+    static public final String version = "3.5.0";
 
     public static JFrame frame = null;
 
@@ -721,6 +724,25 @@ public class DatCon extends JPanel
                     createAndShowGUI();
                 }
             });
+            KeyboardFocusManager.getCurrentKeyboardFocusManager()
+            .addPropertyChangeListener("permanentFocusOwner", new PropertyChangeListener()
+        {
+            public void propertyChange(final PropertyChangeEvent e)
+            {
+                if (e.getNewValue() instanceof JTextField)
+                {
+                                        SwingUtilities.invokeLater(new Runnable()
+                    {
+                        public void run()
+                        {
+                            JTextField textField = (JTextField)e.getNewValue();
+                            textField.selectAll();
+                        }
+                    });
+
+                }
+            }
+        });
         } else {
             javax.swing.SwingUtilities.invokeLater(new Runnable() {
                 @Override

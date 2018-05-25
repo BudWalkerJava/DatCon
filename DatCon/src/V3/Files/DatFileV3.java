@@ -250,6 +250,7 @@ public class DatFileV3 extends src.Files.DatFile {
 
     @Override
     public void preAnalyze() throws NotDatFile {
+        super.preAnalyze();
         try {
             reset();
             clearRecsInDat();
@@ -266,7 +267,6 @@ public class DatFileV3 extends src.Files.DatFile {
                     String payloadString = xorBB.getAsString();
                     String lines[] = payloadString.split("\\n");
                     for (int i = 0; i < lines.length; i++) {
-                        //System.out.println("XX " + payloadString);
                         opLines.add(new OpConfig.Line(lines[i]));
                     }
                 }
@@ -278,8 +278,7 @@ public class DatFileV3 extends src.Files.DatFile {
                 if (tickNo > highestTickNo) {
                     highestTickNo = tickNo;
                 }
-                if ((_type == 0x8000) /*&& (firstMotorStartTick == 0
-                                      || lastMotorStopTick == 0)*/) {
+                if (_type == 0x8000) {
                     Payload xorBB = new Payload(this, _start, _payloadLength,
                             _type, tickNo);
                     String payloadString = xorBB.getString();
@@ -316,8 +315,9 @@ public class DatFileV3 extends src.Files.DatFile {
         } catch (Corrupted ex) {
         } catch (IOException e) {
         } finally {
-            if (Persist.EXPERIMENTAL_DEV)
+            if (Persist.EXPERIMENTAL_DEV) {
                 printTypes();
+            }
             try {
                 OpConfig opConfig = new OpConfig(opLines);
                 recordDefs = opConfig.getRecords();
@@ -328,64 +328,13 @@ public class DatFileV3 extends src.Files.DatFile {
                     DatConLog.Exception(e, "Can't create recDefs");
                 }
             }
-            if (numBattCells == 0) {
-                switch (acType) {
-                case I1:
-                    numBattCells = 6;
-                    break;
-                case I2:
-                    numBattCells = 6;
-                    break;
-                case M100:
-                    numBattCells = 6;
-                    break;
-                case M600:
-                    numBattCells = 6;
-                    break;
-                case MavicPro:
-                    numBattCells = 3;
-                    break;
-                case MavicAir:
-                    numBattCells = 3;
-                    break;
-                case P3AP:
-                    numBattCells = 4;
-                    break;
-                case P3I1:
-                    numBattCells = 6;
-                    break;
-                case P3S:
-                    numBattCells = 4;
-                    break;
-                case P4:
-                    numBattCells = 4;
-                    break;
-                case P4A:
-                    numBattCells = 4;
-                    break;
-                case P4P:
-                    numBattCells = 4;
-                    break;
-                case SPARK:
-                    numBattCells = 3;
-                    break;
-                case UNKNOWN:
-                    numBattCells = 4;
-                    DatConLog.Log("Assuming 4 cellls per battery");
-                    break;
-                default:
-                    numBattCells = 4;
-                    DatConLog.Log("Assuming 4 cellls per battery");
-                    break;
-                }
-            }
             close();
         }
     }
 
     @Override
     public boolean isTablet() {
-        // for now just base this on existence of GoTxt (subType == 12)
+        // for now just base this on existence of GoTxt (type == 12)
         return (getRecId(12) == null);
     }
 }

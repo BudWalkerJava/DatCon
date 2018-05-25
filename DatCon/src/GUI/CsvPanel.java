@@ -61,7 +61,6 @@ public class CsvPanel extends JPanel
 
     SampRatePanel sampRatePanel = null;
 
-    //public PrintStream csvPS = null;
     public CsvWriter csvWriter = null;
 
     public String csvFileName = "";

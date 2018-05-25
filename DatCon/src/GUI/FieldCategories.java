@@ -24,6 +24,9 @@ public class FieldCategories extends JMenu implements ActionListener {
 
     JRadioButtonMenuItem airCompFields = new JRadioButtonMenuItem("AirComp");
 
+    JRadioButtonMenuItem inertialOnlyCalcsFields = new JRadioButtonMenuItem(
+            "InetialOnlyCalcs");
+
     public FieldCategories(String label) {
         setText(label);
         add(basicFields);
@@ -46,6 +49,10 @@ public class FieldCategories extends JMenu implements ActionListener {
         add(airCompFields);
         airCompFields.setSelected(Persist.airComp);
         airCompFields.addActionListener(this);
+
+        add(inertialOnlyCalcsFields);
+        inertialOnlyCalcsFields.setSelected(Persist.airComp);
+        inertialOnlyCalcsFields.addActionListener(this);
     }
 
     @Override
@@ -65,6 +72,10 @@ public class FieldCategories extends JMenu implements ActionListener {
                 Persist.save();
             } else if (source == airCompFields) {
                 Persist.airComp = airCompFields.isSelected();
+                Persist.save();
+            } else if (source == inertialOnlyCalcsFields) {
+                Persist.inertialOnlyCalcs = inertialOnlyCalcsFields
+                        .isSelected();
                 Persist.save();
             }
 

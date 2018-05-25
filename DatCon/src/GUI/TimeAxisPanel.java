@@ -34,10 +34,12 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import src.Files.ConvertDat;
 import src.Files.DatFile;
 import src.Files.FileBeingUsed;
+import src.Files.Persist;
 import src.Files.DatConLog;
 import src.apps.DatCon;
 
@@ -245,16 +247,22 @@ public class TimeAxisPanel extends JPanel
         }
         if (motorStartTick != 0) {
             motorStart.setEnabled(true);
-            setLower(motorStartTick);
+            if (Persist.smartTimeAxis) {
+                setLower(motorStartTick);
+            }
         }
         if (gpsLockTick != -1) {
             gpsLock.setEnabled(true);
-            setLower(gpsLockTick);
+            if (Persist.smartTimeAxis) {
+                setLower(gpsLockTick);
+            }
         }
         if (motorStopTick != -1) {
             motorStop.setEnabled(true);
-            motorStop.setSelected(true);
-            setUpper(motorStopTick);
+            if (Persist.smartTimeAxis) {
+                motorStop.setSelected(true);
+                setUpper(motorStopTick);
+            }
         }
         datCon.checkState();
     }

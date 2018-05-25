@@ -12,7 +12,6 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 import src.Files.DatConLog;
-import src.apps.DatCon;
 
 @SuppressWarnings("serial")
 public class LoggingPanel extends JScrollPane {

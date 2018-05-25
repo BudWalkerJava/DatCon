@@ -1,26 +1,9 @@
-/* Motor class
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that redistribution of source code include
-the following disclaimer in the documentation and/or other materials provided
-with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY ITS CREATOR "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE CREATOR OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package src.DatConRecs.Created4V3;
 
 import src.DatConRecs.Payload;
 import src.DatConRecs.Record;
-import src.DatConRecs.Record_2048;
+import src.DatConRecs.RecIMU;
 import src.Files.ConvertDat;
 import src.Files.ConvertDat.lineType;
 import src.Files.DatConLog;
@@ -55,11 +38,11 @@ public class RecAirComp extends Record {
             "AirComp VelLevel", null, Units.noUnits);
 
     protected static Signal windHeadingSig = Signal.SeriesInt(
-            "AirCompD:WindHeading", "AirComp Derived Wind Heading", null,
+            "AirComp:WindHeading", "AirComp Derived Wind Heading", null,
             Units.degrees180);
 
     protected static Signal windMagSig = Signal.SeriesInt(
-            "AirCompD:WindMagnitude", "AirComp Derived Wind Magnitude", null,
+            "AirComp:WindMagnitude", "AirComp Derived Wind Magnitude", null,
             Units.metersPerSec);
 
     protected static Signal velNormSig = Signal.SeriesFloat("AirComp:VelNorm",
@@ -98,9 +81,9 @@ public class RecAirComp extends Record {
     private double windMag2 = 0.0;
 
     protected void windComps() {
-        yawRadians = Record_2048.current.getYawRadians();
-        double Vn = Record_2048.current.getVn();
-        double Ve = Record_2048.current.getVe();
+        yawRadians = RecIMU.current.getYawRadians();
+        double Vn = RecIMU.current.getVn();
+        double Ve = RecIMU.current.getVe();
         Vh = Math.sqrt(Ve * Ve + Vn * Vn);
         Vh = Vh * ((double) velLevel) / 100.0;
         alpha = Math.atan2(Ve, Vn);

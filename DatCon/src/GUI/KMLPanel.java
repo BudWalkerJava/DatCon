@@ -25,6 +25,7 @@ import javax.swing.JRadioButton;
 import javax.swing.border.LineBorder;
 
 import src.Files.ConvertDat;
+import src.Files.ConvertDat.KmlType;
 import src.Files.FileBeingUsed;
 import src.Files.GoogleElevation;
 import src.Files.DatConLog;
@@ -52,7 +53,7 @@ public class KMLPanel extends JPanel
 
     private LoggingPanel log = null;
 
-    public int kmlType = -1; // -1 = none, 0 = groundTrack, 1 = profile
+    public KmlType kmlType = KmlType.NONE;
 
     boolean groundTrackSelected = false;
 
@@ -143,15 +144,11 @@ public class KMLPanel extends JPanel
     }
 
     public void updateAfterGo(ConvertDat convertDat) {
-        if (kmlType >= 0) {
-            viewIt.setEnabled(true);
-        } else {
-            viewIt.setEnabled(false);
-        }
+        viewIt.setEnabled(kmlType != KmlType.NONE);
         if (convertDat != null && convertDat.isHpValid()
                 && homePointElevationField.getValue() == null) {
             GoogleElevation ge = new GoogleElevation(this,
-                    convertDat.getHPLat(), convertDat.getHPLong());
+                    convertDat.getHPLatDeg(), convertDat.getHPLongDeg());
             ge.execute();
         }
     }
@@ -181,11 +178,11 @@ public class KMLPanel extends JPanel
         convertDat.setTakeOffAlt(homePointElevation);
         convertDat.kmlPS = kmlPS;
         if (profile.isSelected()) {
-            convertDat.kmlType = 1;
+            convertDat.kmlType = KmlType.PROFILE;
         } else if (groundTrack.isSelected()) {
-            convertDat.kmlType = 0;
+            convertDat.kmlType = KmlType.GROUNDTRACK;
         } else {
-            convertDat.kmlType = -1;
+            convertDat.kmlType = KmlType.NONE;
         }
     }
 
@@ -193,13 +190,13 @@ public class KMLPanel extends JPanel
     public void createPrintStreams(String outDirName)
             throws FileBeingUsed, FileNotFoundException {
         if (profile.isSelected()) {
-            kmlType = 1;
+            kmlType = KmlType.PROFILE;
         } else if (groundTrack.isSelected()) {
-            kmlType = 0;
+            kmlType = KmlType.GROUNDTRACK;
         } else {
-            kmlType = -1;
+            kmlType = KmlType.NONE;
         }
-        if (kmlType >= 0) {
+        if (kmlType != KmlType.NONE) {
             log.Info("kml File : " + outDirName + "\\" + kmlFileName);
             if (kmlFileName.length() > 0) {
                 kmlFile = new File(outDirName + "/" + kmlFileName);
@@ -239,9 +236,9 @@ public class KMLPanel extends JPanel
         kmlPS.print(
                 "       <Placemark>\n" + "         <styleUrl>#red</styleUrl>\n"
                         + "          <LineString>\n");
-        if (kmlType == 0) {
+        if (kmlType == KmlType.GROUNDTRACK) {
             kmlPS.print("           <tessellate>1</tessellate>\n");
-        } else if (kmlType == 1) {
+        } else if (kmlType == KmlType.PROFILE) {
             kmlPS.print("           <altitudeMode>absolute</altitudeMode>\n");
         }
         kmlPS.print("            <coordinates>\n");
@@ -302,8 +299,6 @@ public class KMLPanel extends JPanel
 
     public void setHPelevation(double homePointElevation) {
         this.homePointElevation = homePointElevation;
-        //homePointElevationField.setText("Enter HP Elevation");
-        //System.out.println("setHPelevation "+homePointElevation );
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 homePointElevationField.setValue(homePointElevation);

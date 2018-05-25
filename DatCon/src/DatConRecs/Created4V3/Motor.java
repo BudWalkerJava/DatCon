@@ -19,7 +19,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package src.DatConRecs.Created4V3;
 
 import src.DatConRecs.Record;
-import src.DatConRecs.Record_2048;
+import src.DatConRecs.RecIMU;
 import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
 import src.Files.ConvertDat.lineType;
@@ -395,7 +395,7 @@ public class Motor extends Record {
     protected void recordPower() {
         if (Persist.motorPowerCalcs) {
             double currentTime = convertDat.getTime();
-            double currentDistanceTravelled = Record_2048.current
+            double currentDistanceTravelled = RecIMU.current
                     .getDistanceTravelled();
             if (currentNumSamples++ >= numSamples)
                 currentNumSamples = numSamples;
@@ -602,7 +602,7 @@ public class Motor extends Record {
                                 + wattSecsPerTotalDistPerMotor[2]
                                 + wattSecsPerTotalDistPerMotor[3])));
 
-                double VelH = Record_2048.current.getVelH();
+                double VelH = RecIMU.current.getVh();
                 printCsvValue(wattsAvgPerMotor[0] / VelH, motorWattsPerVelHSig,
                         "RFront", lineT, (valid && (VelH != 0.0)));
                 printCsvValue(wattsAvgPerMotor[1] / VelH, motorWattsPerVelHSig,
@@ -618,7 +618,7 @@ public class Motor extends Record {
                         motorWattsPerVelHSig, "All", lineT,
                         (valid && (VelH != 0.0)));
 
-                double VelD = Record_2048.current.getVelD();
+                double VelD = RecIMU.current.getVd();
                 printCsvValue(wattsAvgPerMotor[0] / VelD, motorWattsPerVelDSig,
                         "RFront", lineT, (valid && (VelD != 0.0)));
                 printCsvValue(wattsAvgPerMotor[1] / VelD, motorWattsPerVelDSig,

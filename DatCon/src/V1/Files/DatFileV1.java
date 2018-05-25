@@ -1,29 +1,8 @@
-/* DatFile class
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that redistribution of source code include
-the following disclaimer in the documentation and/or other materials provided
-with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY ITS CREATOR "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE CREATOR OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package src.V1.Files;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -209,29 +188,31 @@ public class DatFileV1 extends DatFile {
     }
 
     public DatFileV1(String fileName) throws IOException, NotDatFile {
-        this(new File(fileName));
+        //this(new File(fileName));
+        super(fileName);
     }
 
     public DatFileV1(File _file) throws NotDatFile, FileNotFoundException {
-        file = _file;
+        super(_file);
+        //file = _file;
         tickGroups[0] = new tickGroup();
         tickGroups[1] = new tickGroup();
-        results = new AnalyzeDatResults();
-        fileLength = file.length();
-        inputStream = new FileInputStream(file);
-        _channel = inputStream.getChannel();
-        try {
-            memory = _channel.map(FileChannel.MapMode.READ_ONLY, 0, fileLength);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        memory.order(ByteOrder.LITTLE_ENDIAN);
-        acType = DatHeader.AcType.P3I1;
+        //results = new AnalyzeDatResults();
+        //fileLength = file.length();
+        //inputStream = new FileInputStream(file);
+        //_channel = inputStream.getChannel();
+        //        try {
+        //            memory = _channel.map(FileChannel.MapMode.READ_ONLY, 0, fileLength);
+        //        } catch (IOException e) {
+        //            e.printStackTrace();
+        //        }
+        //        memory.order(ByteOrder.LITTLE_ENDIAN);
+        //acType = DatHeader.AcType.P3I1;
     }
 
-    public DatFileV1() {
-        acType = DatHeader.AcType.P3I1;
-    }
+    //    public DatFileV1() {
+    //        acType = DatHeader.AcType.P3I1;
+    //    }
 
     public ConvertDat createConVertDat() {
         return (new ConvertDatV1(this));
@@ -258,18 +239,19 @@ public class DatFileV1 extends DatFile {
         tickGroups[0].reset();
         tickGroups[1].reset();
         tgIndex = 1;
-        numCorrupted = 0;
-        numRecs = 0;
-        Corrupted.reset();
-        results = new AnalyzeDatResults();
-        if (inputStream == null) {
-            inputStream = new FileInputStream(file);
-            _channel = inputStream.getChannel();
-            memory = _channel.map(FileChannel.MapMode.READ_ONLY, 0, fileLength);
-            memory.order(ByteOrder.LITTLE_ENDIAN);
-        }
-        startOfRecord = startOfRecords;
-        setPosition(startOfRecord);
+        super.reset();
+        //        numCorrupted = 0;
+        //        numRecs = 0;
+        //        Corrupted.reset();
+        //        results = new AnalyzeDatResults();
+        //        if (inputStream == null) {
+        //            inputStream = new FileInputStream(file);
+        //            _channel = inputStream.getChannel();
+        //            memory = _channel.map(FileChannel.MapMode.READ_ONLY, 0, fileLength);
+        //            memory.order(ByteOrder.LITTLE_ENDIAN);
+        //        }
+        //        startOfRecord = startOfRecords;
+        //        setPosition(startOfRecord);
     }
 
     public AnalyzeDatResults getResults() {
@@ -277,6 +259,7 @@ public class DatFileV1 extends DatFile {
     }
 
     public void preAnalyze() throws NotDatFile {
+
         findOtherStuff();
         findLowestTickNo();
         int length = 0;
@@ -329,7 +312,7 @@ public class DatFileV1 extends DatFile {
             }
         } catch (Exception e) {
         } finally {
-            // numBattCells = 4;
+            super.preAnalyze();
         }
     }
 
@@ -413,19 +396,15 @@ public class DatFileV1 extends DatFile {
                             if (payloadString.indexOf("Board") > -1) {
                                 if (payloadString.indexOf("wm320v2") > -1) {
                                     acType = DatHeader.AcType.P3AP;
-                                    numBattCells = 4;
                                 } else if (payloadString
                                         .indexOf("wm610") > -1) {
                                     acType = DatHeader.AcType.I1;
-                                    numBattCells = 6;
                                 } else if (payloadString
                                         .indexOf("wm321") > -1) {
                                     acType = DatHeader.AcType.P3S;
-                                    numBattCells = 4;
                                 } else if (payloadString
                                         .indexOf("wm328") > -1) {
                                     acType = DatHeader.AcType.P3S;
-                                    numBattCells = 4;
                                 } else if (payloadString
                                         .indexOf("tp1406") > -1) {
                                     // / don't know what this is, involves

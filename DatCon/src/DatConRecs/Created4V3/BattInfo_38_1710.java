@@ -1,14 +1,12 @@
 package src.DatConRecs.Created4V3;
 
-import src.DatConRecs.*;
-import src.Files.AxesAndSigs;
+import src.DatConRecs.BattInfo;
+import src.DatConRecs.Payload;
 import src.Files.ConvertDat;
 import src.Files.ConvertDat.lineType;
 import src.Files.DatConLog;
-import src.Files.Signal;
-import src.Files.Units;
 
-public class BattInfo_38_1710 extends Record {
+public class BattInfo_38_1710 extends BattInfo {
     protected boolean valid = false;
 
     protected float Vol = (float) 0;
@@ -65,36 +63,13 @@ public class BattInfo_38_1710 extends Record {
         }
     }
 
-    protected static Signal battery_infoIntSig = Signal.SeriesInt("BattInfo",
-            "", null, Units.noUnits);
-
-    protected static Signal battery_infoFloatSig = Signal
-            .SeriesFloat("BattInfo", "", null, Units.noUnits);
-
-    public final static Signal currentSig = Signal.SeriesFloat("BattInfo",
-            "Current", null, Units.amps);
-
-    public final static Signal cellVoltSig = Signal.SeriesFloat("BattInfo",
-            "Cell Volts", AxesAndSigs.cellVoltsAxis, Units.volts);
-
-    public final static Signal BattVoltSig = Signal.SeriesFloat("BattInfo",
-            "Cell Volts", null, Units.volts);
-
-    public final static Signal batteryTempSig = Signal.SeriesFloat("BattInfo",
-            "Battery Temp", null, Units.degreesC);
-
-    public final static Signal batteryCap = Signal.SeriesFloat("BattInfo",
-            "Battery Capacity", null, Units.mAh);
-
-    public final static Signal batteryCapPrcnt = Signal.SeriesFloat("BattInfo",
-            "Battery Capacity %", null, Units.percentage);;
-
     public void printCols(lineType lineT) {
         try {
 
             printCsvValue(Vol, battery_infoFloatSig, "Vol", lineT, valid);
             printCsvValue(Current, currentSig, "Current", lineT, valid);
-            printCsvValue(R_time, battery_infoIntSig, "R_time", lineT, valid);
+            printCsvValue(R_time, battInfoRemainTimeSig, "remainingTime", lineT,
+                    valid);
             printCsvValue(CellVol, cellVoltSig, "CellVol", lineT, valid);
             printCsvValue(LowVolThreshold, battery_infoFloatSig,
                     "LowVolThreshold", lineT, valid);

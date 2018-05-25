@@ -51,6 +51,8 @@ public class Persist {
 
     public static boolean motorPowerCalcs = false;
 
+    public static boolean inertialOnlyCalcs = false;
+
     public static boolean magCalcs = false;
 
     public static boolean airComp = false;
@@ -61,8 +63,18 @@ public class Persist {
 
     public static Dimension datConSize = new Dimension(900, 950);
 
+    public static int csvSampleRate = 30;
+
+    public static boolean logPanelEFB = false;
+
+    public static boolean logPanelCFB = false;
+
+    public static boolean logPanelRDFB = false;
+
+    public static boolean smartTimeAxis = true;
+
     static public enum ParsingMode {
-        JUST_DAT, JUST_ENGINEERED, DAT_THEN_ENGINEERED, ENGINEERED_THEN_DAT
+        JUST_DAT, JUST_ENGINEERED, DAT_THEN_ENGINEERED, ENGINEERED_THEN_DAT, ENGINEERED_AND_DAT
     };
 
     public Persist() {
@@ -127,6 +139,11 @@ public class Persist {
             } else {
                 output.println("airComp:false");
             }
+            if (inertialOnlyCalcs) {
+                output.println("inertialOnlyCalcs:true");
+            } else {
+                output.println("inertialOnlyCalcs:false");
+            }
 
             switch (parsingMode) {
             case DAT_THEN_ENGINEERED:
@@ -134,6 +151,9 @@ public class Persist {
                 break;
             case ENGINEERED_THEN_DAT:
                 output.println("parsingMode:DEFINED_THEN_DAT");
+                break;
+            case ENGINEERED_AND_DAT:
+                output.println("parsingMode:ENGINEERED_AND_DAT");
                 break;
             case JUST_DAT:
                 output.println("parsingMode:JUST_DAT");
@@ -155,6 +175,12 @@ public class Persist {
                         (long) datConSize.getWidth(),
                         (long) datConSize.getHeight()));
             }
+            output.println("csvSampleRate:" + csvSampleRate);
+
+            output.println("logPanelEFB:" + logPanelEFB);
+            output.println("logPanelCFB:" + logPanelCFB);
+            output.println("logPanelRDFB:" + logPanelRDFB);
+            output.println("smartTimeAxis:" + smartTimeAxis);
 
             output.close();
         } catch (FileNotFoundException e) {
@@ -191,85 +217,100 @@ public class Persist {
                         inputFileName = inputF;
                     }
                     if (line.indexOf("checkUpdates:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            checkUpdts = true;
-                        } else {
-                            checkUpdts = false;
-                        }
+                        checkUpdts = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            checkUpdts = true;
+                        //                        } else {
+                        //                            checkUpdts = false;
+                        //                        }
                     }
                     if (line.indexOf("showNewVerAvail:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            showNewVerAvail = true;
-                        } else {
-                            showNewVerAvail = false;
-                        }
+                        showNewVerAvail = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            showNewVerAvail = true;
+                        //                        } else {
+                        //                            showNewVerAvail = false;
+                        //                        }
                     }
                     if (line.indexOf("loadLastOnStartup:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            loadLastOnStartup = true;
-                        } else {
-                            loadLastOnStartup = false;
-                        }
+                        loadLastOnStartup = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            loadLastOnStartup = true;
+                        //                        } else {
+                        //                            loadLastOnStartup = false;
+                        //                        }
                     }
                     if (line.indexOf("autoExtractDJIAFiles:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            autoTransDJIAFiles = true;
-                        } else {
-                            autoTransDJIAFiles = false;
-                        }
+                        autoTransDJIAFiles = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            autoTransDJIAFiles = true;
+                        //                        } else {
+                        //                            autoTransDJIAFiles = false;
+                        //                        }
                     }
                     if (line.indexOf("experimentalFields:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            EXPERIMENTAL_FIELDS = true;
-                        } else {
-                            EXPERIMENTAL_FIELDS = false;
-                        }
+                        EXPERIMENTAL_FIELDS = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            EXPERIMENTAL_FIELDS = true;
+                        //                        } else {
+                        //                            EXPERIMENTAL_FIELDS = false;
+                        //                        }
                     }
                     if (line.indexOf("showUnits:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            showUnits = true;
-                        } else {
-                            showUnits = false;
-                        }
+                        showUnits = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            showUnits = true;
+                        //                        } else {
+                        //                            showUnits = false;
+                        //                        }
                     }
                     if (line.indexOf("motorPowerCalcs:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            motorPowerCalcs = true;
-                        } else {
-                            motorPowerCalcs = false;
-                        }
+                        motorPowerCalcs = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            motorPowerCalcs = true;
+                        //                        } else {
+                        //                            motorPowerCalcs = false;
+                        //                        }
                     }
                     if (line.indexOf("magCalcs:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            magCalcs = true;
-                        } else {
-                            magCalcs = false;
-                        }
+                        magCalcs = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            magCalcs = true;
+                        //                        } else {
+                        //                            magCalcs = false;
+                        //                        }
+                    }
+                    if (line.indexOf("inertialOnlyCalcs:") == 0) {
+                        inertialOnlyCalcs = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        inertialOnlyCalcs = state.equalsIgnoreCase("true");
                     }
                     if (line.indexOf("airComp:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            airComp = true;
-                        } else {
-                            airComp = false;
-                        }
+                        airComp = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            airComp = true;
+                        //                        } else {
+                        //                            airComp = false;
+                        //                        }
                     }
                     if (line.indexOf("parsingMode:") == 0) {
                         index = line.indexOf(":") + 1;
@@ -278,6 +319,9 @@ public class Persist {
                             parsingMode = ParsingMode.DAT_THEN_ENGINEERED;
                         } else if (mode.equalsIgnoreCase("DEFINED_THEN_DAT")) {
                             parsingMode = ParsingMode.ENGINEERED_THEN_DAT;
+                        } else if (mode
+                                .equalsIgnoreCase("ENGINEERED_AND_DAT")) {
+                            parsingMode = ParsingMode.ENGINEERED_AND_DAT;
                         } else if (mode.equalsIgnoreCase("JUST_DAT")) {
                             parsingMode = ParsingMode.JUST_DAT;
                         } else if (mode.equalsIgnoreCase("JUST_DEFINED")) {
@@ -285,13 +329,14 @@ public class Persist {
                         }
                     }
                     if (line.indexOf("invalidStructOK:") == 0) {
-                        index = line.indexOf(":") + 1;
-                        String state = line.substring(index);
-                        if (state.equalsIgnoreCase("true")) {
-                            invalidStructOK = true;
-                        } else {
-                            invalidStructOK = false;
-                        }
+                        invalidStructOK = parseBoolean(line);
+                        //                        index = line.indexOf(":") + 1;
+                        //                        String state = line.substring(index);
+                        //                        if (state.equalsIgnoreCase("true")) {
+                        //                            invalidStructOK = true;
+                        //                        } else {
+                        //                            invalidStructOK = false;
+                        //                        }
                     }
                     if (line.indexOf("datConSize:") == 0) {
                         index = line.indexOf(":") + 1;
@@ -303,6 +348,23 @@ public class Persist {
                                     Integer.parseInt(tokens[1]));
                         }
                     }
+                    if (line.indexOf("csvSampleRate:") == 0) {
+                        index = line.indexOf(":") + 1;
+                        String rate = line.substring(index);
+                        csvSampleRate = Integer.parseInt(rate);
+                    }
+                    if (line.indexOf("logPanelEFB:") == 0) {
+                        logPanelEFB = parseBoolean(line);
+                    }
+                    if (line.indexOf("logPanelCFB:") == 0) {
+                        logPanelCFB = parseBoolean(line);
+                    }
+                    if (line.indexOf("logPanelRDFB:") == 0) {
+                        logPanelRDFB = parseBoolean(line);
+                    }
+                    if (line.indexOf("smartTimeAxis:") == 0) {
+                        smartTimeAxis = parseBoolean(line);
+                    }
                 }
                 input.close();
             } catch (IOException e) {
@@ -312,4 +374,9 @@ public class Persist {
         return success;
     }
 
+    private static boolean parseBoolean(String line) {
+        int index = line.indexOf(":") + 1;
+        String state = line.substring(index);
+        return (state.equalsIgnoreCase("true"));
+    }
 }

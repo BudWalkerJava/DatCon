@@ -25,6 +25,7 @@ import src.Files.ConvertDat;
 import src.Files.DatConLog;
 import src.Files.DatFile;
 import src.Files.FileBeingUsed;
+import src.Files.Persist;
 import src.V3.Files.DatFileV3;
 import src.apps.DatCon;
 
@@ -90,6 +91,7 @@ public class LogFilesPanel extends JPanel
         gbc.gridx = 2;
         gbc.gridy = 3;
         eventFileButton = new JRadioButton("Event Log File");
+        eventFileButton.addActionListener(this);
         add(eventFileButton, gbc);
 
         gbc.gridx = 3;
@@ -109,6 +111,7 @@ public class LogFilesPanel extends JPanel
         gbc.gridx = 2;
         gbc.gridy = 4;
         configFileButton = new JRadioButton("Config Log File");
+        configFileButton.addActionListener(this);
         add(configFileButton, gbc);
 
         gbc.gridx = 4;
@@ -126,6 +129,7 @@ public class LogFilesPanel extends JPanel
         gbc.gridx = 2;
         gbc.gridy = 5;
         recDefsFileButton = new JRadioButton("RecDefs File");
+        recDefsFileButton.addActionListener(this);
         add(recDefsFileButton, gbc);
 
         gbc.gridx = 4;
@@ -154,9 +158,9 @@ public class LogFilesPanel extends JPanel
     }
 
     public void reset() {
-        eventFileButton.setSelected(false);
-        configFileButton.setSelected(false);
-        recDefsFileButton.setSelected(false);
+        eventFileButton.setSelected(Persist.logPanelEFB);
+        configFileButton.setSelected(Persist.logPanelCFB);
+        recDefsFileButton.setSelected(Persist.logPanelRDFB);
         eventViewIt.setEnabled(false);
         configViewIt.setEnabled(false);
         recDefsViewIt.setEnabled(false);
@@ -184,6 +188,18 @@ public class LogFilesPanel extends JPanel
             if (source == recDefsViewIt) {
                 Desktop.getDesktop().open(
                         new File(datCon.outputDirName + "/" + recDefsFileName));
+            }
+            if (source == eventFileButton) {
+                Persist.logPanelEFB = eventFileButton.isSelected();
+                Persist.save();
+            }
+            if (source == configFileButton) {
+                Persist.logPanelCFB = configFileButton.isSelected();
+                Persist.save();
+            }
+            if (source == recDefsFileButton) {
+                Persist.logPanelRDFB = recDefsFileButton.isSelected();
+                Persist.save();
             }
         } catch (Exception exception) {
             DatConLog.Exception(exception);

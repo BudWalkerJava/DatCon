@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 public class DatHeader {
 
     public enum AcType {
-        P3I1, P3AP, P3S, I1, P4, MavicPro, P4P, P4A, I2, M600, M100, SPARK, UNKNOWN, MavicAir
+        P3I1, P3AP, P3S, I1, P4, MavicPro, P4P, P4A, I2, M200, M600, M100, SPARK, UNKNOWN, MavicAir, S900
     }
 
     private DatFile datFile;
@@ -25,6 +25,7 @@ public class DatHeader {
         }
         case 06: {
             acType = DatHeader.AcType.P3I1;
+            datFile.setClockRate(600.0);
             break;
         }
         case 11: {
@@ -47,6 +48,10 @@ public class DatHeader {
             acType = DatHeader.AcType.P4P;
             break;
         }
+        case 20: {
+            acType = DatHeader.AcType.S900;
+            break;
+        }
         case 21: {
             acType = DatHeader.AcType.SPARK;
             break;
@@ -55,8 +60,12 @@ public class DatHeader {
             acType = DatHeader.AcType.M600;
             break;
         }
-        case 24: { // M600 Pro
+        case 24: {
             acType = DatHeader.AcType.MavicAir;
+            break;
+        }
+        case 25: {
+            acType = DatHeader.AcType.M200;
             break;
         }
         case 27: {
@@ -79,6 +88,8 @@ public class DatHeader {
             return "Inspire2";
         case M100:
             return "Matrice100";
+        case M200:
+            return "Matrice200";
         case M600:
             return "Matrice600";
         case MavicPro:
@@ -87,6 +98,8 @@ public class DatHeader {
             return "MavicAir";
         case SPARK:
             return "Spark";
+        case S900:
+            return "S900";
         case P3AP:
             return "P3Adv/Pro";
         case P3I1:
