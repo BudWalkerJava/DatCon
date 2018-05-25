@@ -20,7 +20,7 @@ public class AirCraftCondition extends Record {
     protected short UP_state = (short) 0;
 
     protected short landState = (short) 0;
-
+    
     protected short safe_fltr = (short) 0;
 
     protected String nearGrnd = "False";
