@@ -87,34 +87,9 @@ public class CheckUpdates implements ActionListener {
         dialog.setVisible(true);
     }
 
-    private String getNewestVersion() {
-        String retv = "";
-        URL url;
-        try {
-            url = new URL("https://datfile.net/versions.php?version="
-                    + DatCon.version);
-            // Get the input stream through URL Connection
-            URLConnection con = url.openConnection();
-            InputStream is = con.getInputStream();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-            String line = null;
-
-            while ((line = br.readLine()) != null) {
-                if (line.indexOf("DatCon.currentVersion:") >= 0) {
-                    retv = line.substring(line.lastIndexOf(":") + 1);
-                    return retv;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return retv;
-    }
-
+   
     private boolean newVersionAvailable() {
-        String newestVersion = getNewestVersion();
+        String newestVersion = "";
         //int comp = newestVersion.compareTo(DatCon.version);
         int comp = compareVersions(newestVersion, DatCon.version);
         return (comp > 0);
@@ -136,10 +111,7 @@ public class CheckUpdates implements ActionListener {
     }
 
     public void checkForUpdates() {
-        newerVersionOnServer = false;
-        QueryServer fmTask = new QueryServer();
-        fmTask.execute();
-    }
+           }
 
     private boolean newerVersionOnServer = false;
 
@@ -174,10 +146,6 @@ public class CheckUpdates implements ActionListener {
             JComponent source = (JComponent) (e.getSource());
             if (source == okButton) {
                 dialog.dispose();
-            } else if (source == gotoButton) {
-                dialog.dispose();
-                Desktop.getDesktop()
-                        .browse(new URI("https://datfile.net/downloads.html"));
             } else if (source == dontShowAgain) {
                 Persist.showNewVerAvail = false;
                 datCon.menuBar.showWhenNewVerAvail.setSelected(false);
