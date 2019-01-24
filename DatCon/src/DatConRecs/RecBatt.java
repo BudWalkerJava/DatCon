@@ -1,8 +1,8 @@
-package src.DatConRecs.Created4V3;
+package src.DatConRecs;
 
-import src.DatConRecs.Record;
 import src.Files.AxesAndSigs;
 import src.Files.ConvertDat;
+import src.Files.DatConLog;
 import src.Files.Signal;
 import src.Files.Units;
 import src.Files.ConvertDat.lineType;
@@ -11,7 +11,11 @@ public class RecBatt extends Record {
 
     public float crrnt = (float) 0.0;
 
-    public short batteryPercent = 0;
+    protected short batteryPercent = 0;
+
+    protected float fcc = 0.0f;
+
+    protected float remcap = 0.0f;
 
     public float volt[];
 
@@ -53,6 +57,8 @@ public class RecBatt extends Record {
 
     public boolean valid = false;
 
+    protected Signal statusSig = null;
+
     protected Signal battPercent = null;
 
     protected Signal currentSig = null;
@@ -68,18 +74,6 @@ public class RecBatt extends Record {
     protected Signal voltsSig = null;
 
     protected Signal wattsSig = null;
-
-    protected Signal statusSig = Signal.SeriesIntExperimental("Battery:Status",
-            "Battery Status", null, Units.noUnits);
-
-    //    public RecBattery(ConvertDat convertDat) {
-    //        super(convertDat);
-    //        numCells = convertDat.getDatFile().getNumBattCells();
-    //        volt = new float[numCells];
-    //        for (int i = 0; i < numCells; i++) {
-    //            volt[i] = 0.0f;
-    //        }
-    //    }
 
     public RecBatt(ConvertDat convertDat, int id, int length, int index) {
         super(convertDat, id, length);
@@ -203,23 +197,25 @@ public class RecBatt extends Record {
         printCsvValue(avgWatts, wattsSig, "avgWatts", lineT, valid);
     }
 
-    //    protected void printComputedBattCols(lineType lineT) throws Exception {
-    //        //        printCsvValue(crrnt, AxesAndSigs.currentSig, "", lineT, valid);
-    //        //        printCsvValue(totalVolts, AxesAndSigs.voltsSig, "total", lineT, valid);
-    //        printCsvValue(voltDiff, AxesAndSigs.voltsSig, "spread", lineT, valid);
-    //        printCsvValue(watts, AxesAndSigs.wattsSig, "", lineT, valid);
-    //        //        printCsvValue(temp, AxesAndSigs.batteryTempSig, "", lineT, valid);
-    //
-    //        printCsvValue(minCurrent, AxesAndSigs.currentSig, "min", lineT, valid);
-    //        printCsvValue(maxCurrent, AxesAndSigs.currentSig, "max", lineT, valid);
-    //        printCsvValue(avgCurrent, AxesAndSigs.currentSig, "avg", lineT, valid);
-    //
-    //        printCsvValue(minVolts, AxesAndSigs.voltsSig, "min", lineT, valid);
-    //        printCsvValue(maxVolts, AxesAndSigs.voltsSig, "max", lineT, valid);
-    //        printCsvValue(avgVolts, AxesAndSigs.voltsSig, "avg", lineT, valid);
-    //
-    //        printCsvValue(minWatts, AxesAndSigs.wattsSig, "min", lineT, valid);
-    //        printCsvValue(maxWatts, AxesAndSigs.wattsSig, "max", lineT, valid);
-    //        printCsvValue(avgWatts, AxesAndSigs.wattsSig, "avg", lineT, valid);
-    //    }
+    @Override
+    public void printCols(lineType lineT) {
+        try {
+            for (int i = 1; i <= _datFile.getNumBattCells(); i++) {
+                printCsvValue(volt[i - 1], cellVoltSig, "cellVolts" + i, lineT,
+                        valid);
+            }
+            printCsvValue(crrnt, currentSig, "current", lineT, valid);
+            printCsvValue(totalVolts, voltsSig, "totalVolts", lineT, valid);
+            printCsvValue(temp, batteryTempSig, "Temp", lineT, valid);
+            printCsvValue(batteryPercent, battPercent, "battery%", lineT,
+                    valid);
+            printCsvValue(fcc, batteryFCC, "FullChargeCap", lineT, valid);
+            printCsvValue(remcap, batteryRemCap, "RemainingCap", lineT, valid);
+            printComputedBattCols(lineT);
+
+        } catch (Exception e) {
+            DatConLog.Exception(e);
+        }
+    }
+
 }
